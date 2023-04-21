@@ -1,0 +1,34 @@
+/*----------------------\
+   LevelInfo by Tekish
+\----------------------*/
+
+class levelinfobridge
+{
+	ui private static int getconsoleplayer()
+	{
+		return consoleplayer;
+	}
+
+	ui private static int gethazard()
+	{
+		playerinfo player = players[consoleplayer];
+		return player.hazardcount;
+	}
+
+	ui private static int getmorph()
+	{
+		playerinfo player = players[consoleplayer];
+		return player.morphtics;
+	}
+
+	ui private static int getpoison()
+	{
+		playerinfo player = players[consoleplayer];
+		return player.poisoncount;
+	}
+
+	ui private static int gettotaltime()
+	{
+		return level.totaltime;
+	}
+}

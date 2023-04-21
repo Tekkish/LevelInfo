@@ -1,0 +1,86 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "LevelInfo Options", "LI_Options"
+}
+
+OptionMenu "LI_Options"
+{
+	Title "LevelInfo Options"
+	Option "Show LevelInfo", "li_visible", "LI_YesNo"
+	StaticText ""
+	StaticText "General Options", 1
+	ScaleSlider "Abbreviated Characters", "li_abbreviate", 0, 8, 1, "None"
+	Option "Highlight Values", "li_highlightvalue", "LI_YesNo"
+	Slider "Opacity Percentage", "li_opacity", 10, 100, 1, 0
+	Option "Show Active Powerups", "li_showpowerups", "LI_YesNo"
+	Option "Show Berserk Status", "li_showberserk", "LI_YesNo"
+	Option "Show Hazards", "li_showhazards", "LI_YesNo"
+	Option "Show Map Items", "li_showitems", "LI_YesNo"
+	Option "Show Map Par Time", "li_showpar", "LI_YesNo"
+	Option "Show Map Statistics", "li_showlevelinfo", "LI_YesNo"
+	Option "Show Map Time", "li_showtime", "LI_YesNo"
+	Option "Show Map Total Time", "li_showtotaltime", "LI_YesNo"
+	Option "Show on Automap", "li_showonmap", "LI_YesNo"
+	Option "Show Oxygen Time", "li_showoxygen", "LI_YesNo"
+	Option "Show Percentages", "li_showpercentage", "LI_ShowPercentage"
+	Option "Use Doom Font", "li_doomfont", "LI_YesNo"
+	Option "Value Alignment", "li_alignvalue", "LI_AlignValue"
+	StaticText ""
+	StaticText "Position Options", 1
+	StaticText "You can specify a custom position"
+	StaticText "for LevelInfo below. Note that it's"
+	StaticText "possible to exceed the boundries of the"
+	StaticText "screen if a low resolution is being used."
+	StaticText ""
+	Option "Position Preset", "li_position", "LI_Position"
+	StaticText ""
+	StaticText "If the chosen preset is custom, you"
+	StaticText "can further tweak the position below."
+	StaticText ""
+	Option "Horizontal Alignment", "li_alignx", "LI_AlignX"
+	Slider "Horizontal Position", "li_x", 0, 90, 1, 0
+	Option "Vertical Alignment", "li_aligny", "LI_AlignY"
+	Slider "Vertical Position", "li_y", 0, 50, 1, 0
+}
+
+OptionValue "LI_AlignValue"
+{
+	0, "Standard"
+	1, "Numeric"
+}
+
+OptionValue "LI_AlignX"
+{
+	0, "Left"
+	1, "Right"
+}
+
+OptionValue "LI_AlignY"
+{
+	0, "Top"
+	1, "Bottom"
+}
+
+OptionValue "LI_Position"
+{
+	0, "Custom"
+	1, "Top Left"
+	2, "Center Left"
+	3, "Bottom Left"
+	4, "Top Right"
+	5, "Center Right"
+	6, "Bottom Right"
+}
+
+OptionValue "LI_ShowPercentage"
+{
+	0, "No"
+	1, "With Statistics"
+	2, "Replace Statistics"
+}
+
+OptionValue "LI_YesNo"
+{
+	0, "No"
+	1, "Yes"
+}

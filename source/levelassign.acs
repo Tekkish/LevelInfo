@@ -1,0 +1,124 @@
+/*---------------------------------\
+   LevelInfo Assignment by Tekish
+\---------------------------------*/
+
+#define LI_POWERUPS	14
+#define LI_TOTAL	10 + LI_POWERUPS
+
+bool powerups[LI_POWERUPS][2];
+str powerupsvalues[LI_POWERUPS][3];
+
+function void levelassign(str class)
+{
+	// Argent
+	if (class == "ArgPlayer")
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerStrength";				powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "ArgPowerHasteSpeed";		powerupsvalues[1][1] = "Fast";			powerupsvalues[1][2] = "i";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerInvisibility";			powerupsvalues[2][1] = "Hidden";		powerupsvalues[2][2] = "n";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "ArgPowerInvuln";			powerupsvalues[3][1] = "Immune";		powerupsvalues[3][2] = "k";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerLightamp";				powerupsvalues[4][1] = "Light";			powerupsvalues[4][2] = "f";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "ArgPowerQuadDamage";		powerupsvalues[5][1] = "Quad";			powerupsvalues[5][2] = "t";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "ArgPowerRegen";				powerupsvalues[6][1] = "Regen";			powerupsvalues[6][2] = "y";
+		powerups[7][0] = true;		powerupsvalues[7][0] = "PowerIronfeet";				powerupsvalues[7][1] = "Suit";			powerupsvalues[7][2] = "d";
+	}
+	
+	// Ashes 2063
+	else if (class == "Scavenger")
+	{
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerInvulnerable";			powerupsvalues[1][1] = "Immune";		powerupsvalues[1][2] = "k";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerDoubleFiringSpeed";	powerupsvalues[2][1] = "Rage";			powerupsvalues[2][2] = "a";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerRegeneration";			powerupsvalues[3][1] = "Regen";			powerupsvalues[3][2] = "y";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerIronfeet";				powerupsvalues[4][1] = "Suit";			powerupsvalues[4][2] = "d";
+	}
+
+	// Brutal Doom
+	else if (class == "BDoomer" || class == "Doomer2" || class == "TacticalDoomer" || class == "Purist")
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerStrength";				powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerInvisibility";			powerupsvalues[1][1] = "Hidden";		powerupsvalues[1][2] = "n";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerInvulnerable";			powerupsvalues[2][1] = "Immune";		powerupsvalues[2][2] = "k";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerTransformBaron";		powerupsvalues[3][1] = "Morph";			powerupsvalues[3][2] = "o";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerTransformRevenant";	powerupsvalues[4][1] = "Morph";			powerupsvalues[4][2] = "o";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerTorch";				powerupsvalues[5][1] = "Light";			powerupsvalues[5][2] = "f";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerIronfeet";				powerupsvalues[6][1] = "Suit";			powerupsvalues[6][2] = "d";
+	}
+
+	// Death Foretold
+	else if (class == "Doom4Player")
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerD4Strength";			powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerD4Speed";				powerupsvalues[1][1] = "Fast";			powerupsvalues[1][2] = "i";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerD4Invisibility";		powerupsvalues[2][1] = "Hidden";		powerupsvalues[2][2] = "n";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerD4Invulnerable";		powerupsvalues[3][1] = "Immune";		powerupsvalues[3][2] = "k";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerLightamp";				powerupsvalues[4][1] = "Light";			powerupsvalues[4][2] = "f";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerQDamage";				powerupsvalues[5][1] = "Quad";			powerupsvalues[5][2] = "t";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerD4Regeneration";		powerupsvalues[6][1] = "Regen";			powerupsvalues[6][2] = "y";
+		powerups[7][0] = true;		powerupsvalues[7][0] = "PowerD4IronFeet";			powerupsvalues[7][1] = "Suit";			powerupsvalues[7][2] = "d";
+	}
+
+	// Doom 64 Retribution
+	else if (class == "64DoomPlayer" && !checkinventory("Stamina"))
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerStrength";				powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerInvisibility";			powerupsvalues[1][1] = "Hidden";		powerupsvalues[1][2] = "n";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerInvulnerable";			powerupsvalues[2][1] = "Immune";		powerupsvalues[2][2] = "k";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "64PowerLightAmp";			powerupsvalues[3][1] = "Light";			powerupsvalues[3][2] = "f";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerIronfeet";				powerupsvalues[4][1] = "Suit";			powerupsvalues[4][2] = "d";
+	}
+
+	// Doom Incarnate
+	else if (class == "CaptainBlazkowicz")
+	{
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerWrath";				powerupsvalues[1][1] = "Berserk";		powerupsvalues[1][2] = "g";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerPsyche";				powerupsvalues[2][1] = "Hidden";		powerupsvalues[2][2] = "n";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerBattleSuit";			powerupsvalues[3][1] = "Immune";		powerupsvalues[3][2] = "k";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerLightamp";				powerupsvalues[4][1] = "Light";			powerupsvalues[4][2] = "f";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerQuadDamage";			powerupsvalues[5][1] = "Quad";			powerupsvalues[5][2] = "t";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerQ3Regeneration";		powerupsvalues[6][1] = "Regen";			powerupsvalues[6][2] = "y";
+		powerups[7][0] = true;		powerupsvalues[7][0] = "PowerIronfeet";				powerupsvalues[7][1] = "Suit";			powerupsvalues[7][2] = "d";
+	}
+
+	// Flakes Doom
+	else if (class == "FKPlayer" && checkinventory("FirstTimeShotgunning"))
+	{
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerHaste";				powerupsvalues[1][1] = "Fast";			powerupsvalues[1][2] = "i";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerInvisibility";			powerupsvalues[2][1] = "Hidden";		powerupsvalues[2][2] = "n";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerInvulnerable";			powerupsvalues[3][1] = "Immune";		powerupsvalues[3][2] = "k";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerLightAmp";				powerupsvalues[4][1] = "Light";			powerupsvalues[4][2] = "f";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerQuadDamage";			powerupsvalues[5][1] = "Quad";			powerupsvalues[5][2] = "t";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerIronfeet";				powerupsvalues[6][1] = "Suit";			powerupsvalues[6][2] = "d";
+	}
+
+	// Project Brutality
+	else if (class == "PB_Doomer")
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerStrength";				powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerDoubleDamage";			powerupsvalues[1][1] = "Damage";		powerupsvalues[1][2] = "t";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerSpeed";				powerupsvalues[2][1] = "Fast";			powerupsvalues[2][2] = "i";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerInvisibility";			powerupsvalues[3][1] = "Hidden";		powerupsvalues[3][2] = "n";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerInvulnerable";			powerupsvalues[4][1] = "Immune";		powerupsvalues[4][2] = "k";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerLightAmp";				powerupsvalues[5][1] = "Light";			powerupsvalues[5][2] = "f";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerIronfeet";				powerupsvalues[6][1] = "Suit";			powerupsvalues[6][2] = "d";
+		powerups[7][0] = true;		powerupsvalues[7][0] = "PowerTimeFreezer";			powerupsvalues[7][1] = "Time";			powerupsvalues[7][2] = "p";
+	}
+
+	// Doom, Heretic, Hexen, Strife
+	else
+	{
+		powerups[0][0] = true;		powerupsvalues[0][0] = "PowerStrength";				powerupsvalues[0][1] = "Berserk";		powerupsvalues[0][2] = "g";
+		powerups[1][0] = true;		powerupsvalues[1][0] = "PowerScanner";				powerupsvalues[1][1] = "Detect";		powerupsvalues[1][2] = "w";
+		powerups[2][0] = true;		powerupsvalues[2][0] = "PowerSpeed";				powerupsvalues[2][1] = "Fast";			powerupsvalues[2][2] = "i";
+		powerups[3][0] = true;		powerupsvalues[3][0] = "PowerFlight";				powerupsvalues[3][1] = "Flight";		powerupsvalues[3][2] = "z";
+		powerups[4][0] = true;		powerupsvalues[4][0] = "PowerInvisibility";			powerupsvalues[4][1] = "Hidden";		powerupsvalues[4][2] = "n";
+		powerups[5][0] = true;		powerupsvalues[5][0] = "PowerGhost";				powerupsvalues[5][1] = "Hidden";		powerupsvalues[5][2] = "n";
+		powerups[6][0] = true;		powerupsvalues[6][0] = "PowerShadow";				powerupsvalues[6][1] = "Hidden";		powerupsvalues[6][2] = "n";
+		powerups[7][0] = true;		powerupsvalues[7][0] = "PowerInvulnerable";			powerupsvalues[7][1] = "Immune";		powerupsvalues[7][2] = "k";
+		powerups[8][0] = true;		powerupsvalues[8][0] = "PowerLightamp";				powerupsvalues[8][1] = "Light";			powerupsvalues[8][2] = "f";
+		powerups[9][0] = true;		powerupsvalues[9][0] = "PowerTorch";				powerupsvalues[9][1] = "Light";			powerupsvalues[9][2] = "f";
+		powerups[10][0] = true;		powerupsvalues[10][0] = "PowerWeaponlevel2";		powerupsvalues[10][1] = "Power";		powerupsvalues[10][2] = "g";
+		powerups[11][0] = true;		powerupsvalues[11][0] = "PowerIronfeet";			powerupsvalues[11][1] = "Suit";			powerupsvalues[11][2] = "d";
+		powerups[12][0] = true;		powerupsvalues[12][0] = "PowerMask";				powerupsvalues[12][1] = "Suit";			powerupsvalues[12][2] = "d";
+		powerups[13][0] = true;		powerupsvalues[13][0] = "PowerTargeter";			powerupsvalues[13][1] = "Target";		powerupsvalues[13][2] = "f";
+	}
+}

@@ -1,0 +1,707 @@
+/*----------------------\
+   LevelInfo by Tekish
+\----------------------*/
+
+#library "levelinfo"
+#include "zcommon.acs"
+#include "levelassign.acs"
+
+#define LI_BASECOLOR	CR_WHITE
+#define LI_COLOR_DARK	"u"
+#define LI_COLOR_MORPH	"s"
+#define LI_COLOR_OXYGEN	"v"
+#define LI_COLOR_POISON	"q"
+#define LI_COLOR_RADS	"x"
+#define LI_COLOR_VALUE	"k"
+#define LI_FLAGS		HUDMSG_PLAIN | HUDMSG_ALPHA | HUDMSG_NOWRAP
+#define LI_ID_TEXTS		160000
+#define LI_ID_VALUES	LI_ID_TEXTS + 1
+#define LI_MAXNUMBER	99999
+#define LI_MAXTIME		356400
+#define LI_POISONTICS	10
+#define LI_RADSDAMAGE	560
+#define LI_REFRESH		3
+#define LI_SPACE		"`"
+#define LI_TICRATE		35
+#define LI_TIME			(LI_REFRESH << 16) / LI_TICRATE + 1
+
+bool highlight[LI_TOTAL];
+str text[LI_TOTAL];
+str value[LI_TOTAL][3];
+
+/*------------\
+   Functions
+\------------*/
+
+function void alignvalue(bool align, int showpercentage)
+{
+	int limit = 3;
+
+	if (align || showpercentage == 1)
+	{
+		int maxleft = maxlength(1, false, limit);
+		int maxright = maxlength(2, false, limit);
+
+		if (showpercentage)
+		{
+			if (align)
+				int maxpercentage = maxlength(3, false, limit);
+			else
+				int maxtotal = maxlength(4, false, limit);
+		}
+	}
+
+	for (int i = 0; i < LI_TOTAL; i++)
+	{
+		if (strcmp(text[i], ""))
+		{
+			if (i < limit && showpercentage != 2)
+			{
+				if (align)
+				{
+					value[i][0] = strparam(s:generatespace(maxleft - strlen(value[i][0]), 0), s:value[i][0]);
+					value[i][1] = strparam(s:generatespace(maxright - strlen(value[i][1]), 0), s:value[i][1]);
+
+					if (showpercentage)
+						value[i][2] = strparam(s:generatespace(maxpercentage - strlen(value[i][2]) + 1, 0), s:value[i][2]);
+				}
+				else if (showpercentage)
+				{
+					value[i][2] = strparam(s:generatespace(maxtotal - strlen(value[i][0]) - strlen(value[i][1]) + 1, 0), s:value[i][2]);
+				}
+
+				value[i][0] = strparam(s:value[i][0], s:"/", s:value[i][1], s:value[i][2]);
+			}
+
+			if (align)
+				value[i][0] = strparam(s:generatespace(maxlength(1, false, 0) - strlen(value[i][0]), 0), s:value[i][0]);
+		}
+	}
+}
+
+function str coloredtext(str color, str string, bool addcolor)
+{
+	if (addcolor)
+		return strparam(s:"\c", s:color, s:string, s:"\c-");
+
+	return string;
+}
+
+function str formattime(int seconds)
+{
+	if (seconds < 0)
+		seconds = -seconds;
+
+	if (seconds < 3600)
+		return strparam(d:seconds / 60, s:":", d:(seconds % 60) / 10, d:seconds % 10);
+
+	return strparam(d:seconds / 3600, s:":", d:((seconds / 60) % 60) / 10, d:((seconds / 60) % 60) % 10, s:":", d:(seconds % 60) / 10, d:seconds % 10);
+}
+
+function str generatespace(int amount, int type)
+{
+	str space = "";
+
+	for (int i = 0; i < amount; i++)
+	{
+		switch (type)
+		{
+			case 1:
+				space = strparam(s:space, s:LI_SPACE, s:"\n");
+				break;
+
+			case 2:
+				space = strparam(s:space, s:"\n", s:LI_SPACE);
+				break;
+
+			default:
+				space = strparam(s:space, s:LI_SPACE);
+		}
+	}
+
+	return space;
+}
+
+function int maxlength(int align, bool index, int limit)
+{
+	int length, max, maxindex;
+
+	if (!limit)
+		limit = LI_TOTAL;
+
+	for (int i = 0; i < limit; i++)
+	{
+		switch (align)
+		{
+			case 0:
+				length = strlen(text[i]);
+				break;
+
+			case 1:
+				length = strlen(value[i][0]);
+				break;
+
+			case 2:
+				length = strlen(value[i][1]);
+				break;
+
+			case 3:
+				length = strlen(value[i][2]);
+				break;
+				
+			default:
+				length = strlen(value[i][0]) + strlen(value[i][1]);
+		}
+
+		if (length > max)
+		{
+			maxindex = i;
+			max = length;
+		}
+	}
+
+	if (index)
+		return maxindex;
+
+	return max;
+}
+
+function int maxnumber(int number, int maximum)
+{
+	if (number > maximum)
+		return maximum;
+
+	return number;
+}
+
+function str newline(str string)
+{
+	if (strcmp(string, ""))
+		return strparam(s:string, s:"\n");
+
+	return string;
+}
+
+function void spaceright(str space, int align)
+{
+	int i = maxlength(align, true, 0);
+
+	if (!align)
+		text[i] = strparam(s:text[i], s:space);
+	else
+		value[i][0] = strparam(s:value[i][0], s:space);
+}
+
+/*-------\
+   Core
+\-------*/
+
+function void levelinfo(void)
+{
+	if (getcvar("li_visible"))
+	{
+		bool alignx, aligny;
+		bool position = getcvar("li_position");
+		int offsetx = 1;
+		int offsety = 1;
+		int x, y;
+		str marginbottom = "", marginleft = "", margintop = "";
+
+		switch (position)
+		{
+			case 0:
+				alignx = getcvar("li_alignx");
+				aligny = getcvar("li_aligny");
+				x = getcvar("li_x");
+				y = getcvar("li_y");
+
+				if (x < 0 || x > 90)
+					x = 0;
+
+				if (y < 0 || y > 50)
+					y = 0;
+
+				offsetx = x + offsetx;
+				offsety = y + offsety;
+
+				if (!alignx)
+				{
+					marginleft = generatespace(offsetx, 0);
+					x = 0.0;
+				}
+				else
+				{
+					x = 1.0;
+				}
+
+				if (!aligny)
+				{
+					margintop = generatespace(offsety, 1);
+					y = 0.0;
+				}
+				else
+				{
+					marginbottom = generatespace(offsety, 2);
+					y = 1.0;
+				}
+
+				break;
+
+			case 1:
+				alignx = false;
+				marginleft = generatespace(offsetx, 0);
+				margintop = generatespace(offsety, 1);
+				x = 0.0;
+				y = 0.0;
+				break;
+
+			case 2:
+				alignx = false;
+				marginleft = generatespace(offsetx, 0);
+				x = 0.0;
+				y = 0.5;
+				break;
+
+			case 3:
+				alignx = false;
+				marginbottom = generatespace(offsety, 2);
+				marginleft = generatespace(offsetx, 0);
+				x = 0.0;
+				y = 1.0;
+				break;
+
+			case 5:
+				alignx = true;
+				x = 1.0;
+				y = 0.5;
+				break;
+
+			case 6:
+				alignx = true;
+				marginbottom = generatespace(offsety, 2);
+				x = 1.0;
+				y = 1.0;
+				break;
+
+			default:
+				alignx = true;
+				margintop = generatespace(offsety, 1);
+				x = 1.0;
+				y = 0.0;
+		}
+
+		bool highlightvalue = getcvar("li_highlightvalue");
+		bool showlevelinfo = getcvar("li_showlevelinfo");
+		int showpercentage = getcvar("li_showpercentage");
+		int flags, i, items, itemstotal, monsters, monsterstotal, secrets, secretstotal;
+		str percentage = "", texts = "", values = "";
+
+		if (showpercentage < 0 || showpercentage > 2)
+			showpercentage = 0;
+
+		for (i = 0; i < LI_TOTAL; i++)
+		{
+			highlight[i] = false;
+			text[i] = "";
+			value[i][0] = "";
+			value[i][1] = "";
+			value[i][2] = "";
+		}
+
+		if (showlevelinfo)
+		{
+			bool showitems = getcvar("li_showitems");
+			bool showtime = getcvar("li_showtime");
+
+			itemstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_ITEMS), LI_MAXNUMBER);
+			monsterstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_MONSTERS), LI_MAXNUMBER);
+			secretstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_SECRETS), LI_MAXNUMBER);
+
+			if (monsterstotal)
+			{
+				monsters = maxnumber(getlevelinfo(LEVELINFO_KILLED_MONSTERS), LI_MAXNUMBER);
+
+				if (highlightvalue && monsters >= monsterstotal)
+					highlight[0] = true;
+
+				text[0] = "Kills";
+
+				if (showpercentage != 2)
+				{
+					value[0][0] = strparam(d:monsters);
+					value[0][1] = strparam(d:monsterstotal);
+				}
+
+				if (showpercentage)
+				{
+					percentage = strparam(d:100 * monsters / monsterstotal, s:"%");
+
+					if (showpercentage == 2)
+						value[0][0] = percentage;
+					else
+						value[0][2] = percentage;
+				}
+			}
+
+			if (showitems && itemstotal)
+			{
+				items = maxnumber(getlevelinfo(LEVELINFO_FOUND_ITEMS), LI_MAXNUMBER);
+
+				if (highlightvalue && items >= itemstotal)
+					highlight[1] = true;
+
+				text[1] = "Items";
+
+				if (showpercentage != 2)
+				{
+					value[1][0] = strparam(d:items);
+					value[1][1] = strparam(d:itemstotal);
+				}
+
+				if (showpercentage)
+				{
+					percentage = strparam(d:100 * items / itemstotal, s:"%");
+
+					if (showpercentage == 2)
+						value[1][0] = percentage;
+					else
+						value[1][2] = percentage;
+				}
+			}
+
+			if (secretstotal)
+			{
+				secrets = maxnumber(getlevelinfo(LEVELINFO_FOUND_SECRETS), LI_MAXNUMBER);
+
+				if (highlightvalue && secrets >= secretstotal)
+					highlight[2] = true;
+
+				text[2] = "Secrets";
+
+				if (showpercentage != 2)
+				{
+					value[2][0] = strparam(d:secrets);
+					value[2][1] = strparam(d:secretstotal);
+				}
+
+				if (showpercentage)
+				{
+					percentage = strparam(d:100 * secrets / secretstotal, s:"%");
+
+					if (showpercentage == 2)
+						value[2][0] = percentage;
+					else
+						value[2][2] = percentage;
+				}
+			}
+
+			if (showtime && (itemstotal || monsterstotal || secretstotal))
+			{
+				bool showpar = getcvar("li_showpar");
+				bool showtotaltime = getcvar("li_showtotaltime");
+				int timemap = maxnumber(timer() / LI_TICRATE, LI_MAXTIME);
+				int timepar = maxnumber(getlevelinfo(LEVELINFO_PAR_TIME), LI_MAXTIME);
+
+				if (highlightvalue && timepar >= timemap)
+					highlight[3] = true;
+
+				text[3] = "Time";
+				value[3][0] = formattime(timemap);
+
+				if (showpar && timepar)
+				{
+					text[4] = "Par";
+					value[4][0] = formattime(timepar);
+				}
+				else
+				{
+					showpar = false;
+				}
+
+				if (showtotaltime)
+				{
+					int timetotal = scriptcall("levelinfobridge", "gettotaltime");
+
+					if (timetotal)
+					{
+						text[5] = "Total";
+						value[5][0] = formattime(maxnumber(timetotal / LI_TICRATE, LI_MAXTIME));
+					}
+				}
+			}
+			else
+			{
+				showtime = false;
+			}
+		}
+
+		bool cantdrown;
+		bool showpowerups = getcvar("li_showpowerups");
+		int a = 6;
+
+		if (showpowerups)
+		{
+			for (i = 0; i < LI_POWERUPS; i++)
+			{
+				powerups[i][1] = false;
+
+				if (powerups[i][0] && checkinventory(powerupsvalues[i][0]))
+				{
+					if (i == 0)
+					{
+						if (getcvar("li_showberserk"))
+						{
+							powerups[i][1] = true;
+							text[a] = powerupsvalues[i][1];
+							value[a][0] = formattime(maxnumber(getactorpoweruptics(0, powerupsvalues[i][0]) / LI_TICRATE, LI_MAXTIME));
+						}
+					}
+					else
+					{
+						if (!strcmp(powerupsvalues[i][1], "Immune") || !strcmp(powerupsvalues[i][1], "Suit"))
+							cantdrown = true;
+
+						powerups[i][1] = true;
+						text[a] = powerupsvalues[i][1];
+						value[a][0] = formattime(maxnumber(fixeddiv((getactorpoweruptics(0, powerupsvalues[i][0]) << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME));
+					}
+				}
+
+				a++;
+			}
+		}
+
+		bool havemorph, haveoxygen, havepoison, haverads;
+		bool showhazards = getcvar("li_showhazards");
+		bool showoxygen = getcvar("li_showoxygen");
+
+		if (showoxygen && !cantdrown && (classifyactor(0) & ACTOR_ALIVE) && getactorproperty(0, APROP_Waterlevel) == 3)
+		{
+			int oxygen = maxnumber(fixeddiv((getairsupply(playernumber()) << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME);
+
+			if (oxygen < 0)
+				oxygen = 0;
+
+			haveoxygen = true;
+			text[LI_TOTAL - 3] = "Oxygen";
+			value[LI_TOTAL - 3][0] = formattime(oxygen);
+		}
+
+		if (showhazards)
+		{
+			int morph = scriptcall("levelinfobridge", "getmorph");
+			int poison = scriptcall("levelinfobridge", "getpoison");
+			int rads = scriptcall("levelinfobridge", "gethazard");
+
+			if (morph)
+			{
+				havemorph = true;
+				text[LI_TOTAL - 4] = "Morph";
+				value[LI_TOTAL - 4][0] = formattime(maxnumber(fixeddiv((morph << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME));
+			}
+
+			if (poison)
+			{
+				havepoison = true;
+				text[LI_TOTAL - 2] = "Poison";
+				value[LI_TOTAL - 2][0] = formattime(maxnumber(fixeddiv((poison << 16) + (LI_POISONTICS << 16), LI_POISONTICS << 16) >> 16, LI_MAXTIME));
+			}
+
+			if (rads)
+			{
+				str radsvalue = "";
+
+				if (rads < LI_RADSDAMAGE)
+					radsvalue = strparam(d:99 * rads / LI_RADSDAMAGE + 1, s:"%");
+				else
+					radsvalue = formattime(maxnumber(fixeddiv((rads - LI_RADSDAMAGE << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME));
+
+				haverads = true;
+				text[LI_TOTAL - 1] = "Rads";
+				value[LI_TOTAL - 1][0] = radsvalue;
+			}
+		}
+
+		int abbreviate = getcvar("li_abbreviate");
+		str spaceleft = "";
+
+		if (abbreviate < 0 || abbreviate > 8)
+			abbreviate = 4;
+
+		if (havemorph || haveoxygen || havepoison || haverads || showlevelinfo || showpowerups)
+		{
+			if (abbreviate)
+			{
+				for (i = 0; i < LI_TOTAL; i++)
+					text[i] = strleft(text[i], abbreviate);
+			}
+
+			alignvalue(getcvar("li_alignvalue"), showpercentage);
+
+			if (!alignx)
+			{
+				spaceleft = generatespace(maxlength(0, false, 0) + offsetx + 1, 0);
+			}
+			else
+			{
+				spaceright(generatespace(maxlength(1, false, 0) + offsetx + 1, 0), 0);
+				spaceright(generatespace(offsetx, 0), 1);
+			}
+		}
+
+		if (showlevelinfo)
+		{
+			if (monsterstotal)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[0], true));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[0][0], highlight[0]));
+			}
+
+			if (showitems && itemstotal)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[1], true));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[1][0], highlight[1]));
+			}
+
+			if (secretstotal)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[2], true));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[2][0], highlight[2]));
+			}
+
+			if (showtime)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[3], true));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[3][0], highlight[3]));
+
+				if (showpar)
+				{
+					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[4], true));
+					values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[4][0], highlight[3]));
+				}
+
+				if (showtotaltime)
+				{
+					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[5], true));
+					values = strparam(s:newline(values), s:spaceleft, s:value[5][0]);
+				}
+			}
+		}
+
+		if (showpowerups)
+		{
+			bool activepowerup = false;
+			a = 6;
+
+			for (i = 0; i < LI_POWERUPS; i++)
+			{
+				if (powerups[i][1])
+				{
+					if (!activepowerup)
+					{
+						activepowerup = true;
+						texts = newline(texts);
+						values = newline(values);
+					}
+
+					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(powerupsvalues[i][2], text[a], true));
+					values = strparam(s:newline(values), s:spaceleft, s:value[a][0]);
+				}
+
+				a++;
+			}
+		}
+
+		if (havemorph || haveoxygen || havepoison || haverads)
+		{
+			texts = newline(texts);
+			values = newline(values);
+
+			if (havemorph)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_MORPH, text[LI_TOTAL - 4], true));
+				values = strparam(s:newline(values), s:spaceleft, s:value[LI_TOTAL - 4][0]);
+			}
+
+			if (haveoxygen)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_OXYGEN, text[LI_TOTAL - 3], true));
+				values = strparam(s:newline(values), s:spaceleft, s:value[LI_TOTAL - 3][0]);
+			}
+
+			if (havepoison)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_POISON, text[LI_TOTAL - 2], true));
+				values = strparam(s:newline(values), s:spaceleft, s:value[LI_TOTAL - 2][0]);
+			}
+
+			if (haverads)
+			{
+				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_RADS, text[LI_TOTAL - 1], true));
+				values = strparam(s:newline(values), s:spaceleft, s:value[LI_TOTAL - 1][0]);
+			}
+		}
+
+		if (strcmp(texts, ""))
+		{
+			bool showonmap = getcvar("li_showonmap");
+			int opacity = getcvar("li_opacity");
+			str font = "SHAFONT";
+
+			if (showonmap)
+				flags = LI_FLAGS;
+			else
+				flags = LI_FLAGS | HUDMSG_NOTWITHFULLMAP;
+
+			if (getcvar("li_doomfont"))
+				font = "SHADFONT";
+
+			if (opacity < 10 || opacity > 100)
+				opacity = 100;
+
+			opacity = fixeddiv(opacity << 16, 100.0);
+
+			setfont(font);
+			hudmessage(s:margintop, s:texts, s:marginbottom; flags, LI_ID_TEXTS, LI_BASECOLOR, x, y, LI_TIME, opacity);
+			hudmessage(s:margintop, s:values, s:marginbottom; flags, LI_ID_VALUES, LI_BASECOLOR, x, y, LI_TIME, opacity);
+		}
+	}
+}
+
+script "levelinfo" (void)
+{
+	levelinfo();
+	delay(LI_REFRESH);
+	restart;
+}
+
+script "levelinfodeath" DEATH
+{
+	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
+		terminate;
+
+	acs_namedterminate("levelinfo", 0);
+}
+
+script "levelinfoenter" ENTER
+{
+	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
+		terminate;
+
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
+		terminate;
+
+	levelassign(getactorclass(0));
+	acs_namedexecute("levelinfo", 0);
+}
+
+script "levelinforespawn" RESPAWN
+{
+	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
+		terminate;
+
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
+		terminate;
+
+	acs_namedexecute("levelinfo", 0);
+}
