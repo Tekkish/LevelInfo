@@ -1,3 +1,6 @@
+## April 27, 2023 (v1.33)
+- Allowed the use of dashes and underscores in assignment lumps.
+
 ## April 26, 2023 (v1.32)
 - Added a custom lump that can be used to modify the power-up list without editing source code.
 - Moved internal power-up assignments to ZScript to avoid having to recompile the ACS when making changes.

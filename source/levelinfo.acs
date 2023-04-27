@@ -435,11 +435,11 @@ function bool trimchar(str char, int type)
 	if (strlen(char) == 1)
 	{
 		int start;
-		int chars = 4;
-		str trimchars[4] = { ",", ".", "\n", " " };
+		int chars = 3;
+		str trimchars[3] = { ",", "\n", " " };
 
 		if (type)
-			start = 2;
+			start = 1;
 
 		for (int i = start; i < chars; i++)
 		{
@@ -456,11 +456,11 @@ function bool validchar(str char, int type)
 	if (strlen(char) == 1)
 	{
 		int start;
-		int chars = 40;
-		str validchars[40] = { ",", ".", "\n", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+		int chars = 42;
+		str validchars[42] = { ",", ".", "\n", " ", "-", "_", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 
 		if (type)
-			start = 14;
+			start = 16;
 
 		for (int i = start; i < chars; i++)
 		{
