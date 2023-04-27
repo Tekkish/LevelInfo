@@ -4,6 +4,19 @@
 
 class levelinfobridge
 {
+	ui private static bool checkinventory(string inventoryitem)
+	{
+		playerinfo player = players[consoleplayer];
+
+		for (inventory item = player.mo.inv; item != null; item = item.inv)
+		{
+			if (item.getclassname() == inventoryitem)
+				return true;
+		}
+
+		return false;
+	}
+
 	ui private static int getconsoleplayer()
 	{
 		return consoleplayer;
@@ -30,5 +43,153 @@ class levelinfobridge
 	ui private static int gettotaltime()
 	{
 		return level.totaltime;
+	}
+
+	ui private static string powerassign()
+	{
+		int lump = -1;
+		int lumps;
+		playerinfo player = players[consoleplayer];
+		string powerassignment;
+
+		for (int i = 0; lumps != -1; i++)
+		{
+			lumps = wads.findlump("LIASSIGN", i, Wads.GLOBALNAMESPACE);
+
+			if (lumps >= 0)
+				lump++;
+		}
+
+		if (lump != -1)
+		{
+			powerassignment = wads.readlump(lump);
+		}
+		else
+		{
+			string playerclass = player.mo.getclassname();
+
+			// Argent
+			if (playerclass == "ArgPlayer")
+			{
+				powerassignment =
+					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
+					"ArgPowerHasteSpeed, Fast, calm, i"			.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"ArgPowerInvuln, Immune, calm, k"			.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"ArgPowerQuadDamage, Quad, calm, t"			.. "\n" ..
+					"ArgPowerRegen, Regen, calm, y"				.. "\n" ..
+					"PowerIronfeet, Suit, calm, d";
+			}
+
+			// Ashes 2063, Ashes Afterglow
+			else if (playerclass == "Scavenger")
+			{
+				powerassignment =
+					"PowerInvulnerable, Immune, calm, f"		.. "\n" ..
+					"PowerDoubleFiringSpeed, Rage, calm, a"		.. "\n" ..
+					"PowerRegeneration, Regen, calm, y"			.. "\n" ..
+					"PowerIronfeet, Suit, calm, d";
+			}
+
+			// Brutal Doom
+			else if (playerclass == "BDoomer" || playerclass == "Doomer2" || playerclass == "TacticalDoomer" || playerclass == "Purist")
+			{
+				powerassignment =
+					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerTransformBaron, Morph, calm, o"		.. "\n" ..
+					"PowerTransformRevenant, Morph, calm, o"	.. "\n" ..
+					"PowerTorch, Light, calm, f"				.. "\n" ..
+					"PowerIronfeet, Suit, calm, d";
+			}
+
+			// Death Foretold
+			else if (playerclass == "Doom4Player")
+			{
+				powerassignment =
+					"PowerD4Strength, Berserk, berserk, g"		.. "\n" ..
+					"PowerD4Speed, Fast, calm, i"				.. "\n" ..
+					"PowerD4Invisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerD4Invulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerQDamage, Quad, calm, t"				.. "\n" ..
+					"PowerD4Regeneration, Regen, calm, y"		.. "\n" ..
+					"PowerD4IronFeet, Suit, calm, d";
+			}
+
+			// Doom 64 Retribution
+			else if (playerclass == "64DoomPlayer" && !checkinventory("Stamina"))
+			{
+				powerassignment =
+					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"64PowerLightAmp, Light, calm, f"			.. "\n" ..
+					"PowerIronFeet, Suit, calm, d";
+			}
+
+			// Doom Incarnate
+			else if (playerclass == "BloodRayne" || playerclass == "CaptainBlazkowicz")
+			{
+				powerassignment =
+					"PowerWrath, Berserk, calm, g"				.. "\n" ..
+					"PowerPsyche, Hidden, calm, n"				.. "\n" ..
+					"PowerBattleSuit, Immune, calm, k"			.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerQuadDamage, Quad, calm, t"			.. "\n" ..
+					"PowerQ3Regeneration, Regen, calm, y"		.. "\n" ..
+					"PowerIronFeet, Suit, calm, d";
+			}
+
+			// Flakes Doom
+			else if (playerclass == "FKPlayer" && checkinventory("FirstTimeShotgunning"))
+			{
+				powerassignment =
+					"PowerHaste, Fast, calm, i"					.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerQuadDamage, Quad, calm, t"			.. "\n" ..
+					"PowerIronFeet, Suit, calm, d";
+			}
+
+			// Project Brutality
+			else if (playerclass == "PB_Doomer")
+			{
+				powerassignment =
+					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
+					"PowerDoubleDamage, Damage, calm, t"		.. "\n" ..
+					"PowerSpeed, Fast, calm, i"					.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightAmp, Light, calm, f"				.. "\n" ..
+					"PowerIronfeet, Suit, calm, d"				.. "\n" ..
+					"PowerTimeFreezer, Time, calm, p";
+			}
+
+			// Doom, Heretic, Hexen, Strife
+			else
+			{
+				powerassignment =
+					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
+					"PowerScanner, Detect, calm, w"				.. "\n" ..
+					"PowerSpeed, Fast, calm, i"					.. "\n" ..
+					"PowerFlight, Flight, calm, z"				.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerGhost, Hidden, calm, n"				.. "\n" ..
+					"PowerShadow, Hidden, calm, n"				.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerTorch, Light, calm, f"				.. "\n" ..
+					"PowerWeaponlevel2, Power, calm, g"			.. "\n" ..
+					"PowerIronfeet, Suit, calm, d"				.. "\n" ..
+					"PowerMask, Suit, calm, d"					.. "\n" ..
+					"PowerTargeter, Target, calm, f";
+			}
+		}
+
+		return powerassignment;
 	}
 }

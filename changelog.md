@@ -1,3 +1,8 @@
+## April 26, 2023 (v1.32)
+- Added a custom lump that can be used to modify the power-up list without editing source code.
+- Moved interal power-up assignments to ZScript to avoid having to recompile the ACS when making changes.
+- Updated support for Death Incarnate.
+
 ## October 26, 2022 (v1.31)
 - Updated support for Project Brutality.
 

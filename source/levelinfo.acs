@@ -4,7 +4,6 @@
 
 #library "levelinfo"
 #include "zcommon.acs"
-#include "levelassign.acs"
 
 #define LI_BASECOLOR	CR_WHITE
 #define LI_COLOR_DARK	"u"
@@ -19,13 +18,18 @@
 #define LI_MAXNUMBER	99999
 #define LI_MAXTIME		356400
 #define LI_POISONTICS	10
+#define LI_POWERUPS		25
 #define LI_RADSDAMAGE	560
 #define LI_REFRESH		3
 #define LI_SPACE		"`"
 #define LI_TICRATE		35
+#define LI_TOTAL		10 + LI_POWERUPS
 #define LI_TIME			(LI_REFRESH << 16) / LI_TICRATE + 1
 
 bool highlight[LI_TOTAL];
+bool powerups[LI_POWERUPS][2];
+int total;
+str powerupsvalues[LI_POWERUPS][4];
 str text[LI_TOTAL];
 str value[LI_TOTAL][3];
 
@@ -87,6 +91,47 @@ function str coloredtext(str color, str string, bool addcolor)
 	return string;
 }
 
+function void errormessage(int type)
+{
+	str message = "";
+
+	switch (type)
+	{
+		case 0:
+			message = "A power-up class is missing or invalid.";
+			break;
+
+		case 1:
+			message = "A power-up name is missing or invalid.";
+			break;
+
+		case 2:
+			message = "A berserk token is missing or invalid.";
+			break;
+
+		case 3:
+			message = "A power-up color is missing or invalid.";
+			break;
+
+		case 4:
+			message = "A supplied player class is invalid.";
+			break;
+
+		case 5:
+			message = "There is no player class to unset.";
+			break;
+
+		case 6:
+			message = "A supplied argument is invalid.";
+			break;
+
+		default:
+			message = "No power-up assignment has been found.";
+	}
+
+	log(s:"LevelInfo error: ", s:message);
+}
+
 function str formattime(int seconds)
 {
 	if (seconds < 0)
@@ -120,6 +165,167 @@ function str generatespace(int amount, int type)
 	}
 
 	return space;
+}
+
+function void powerassign(str powerstring)
+{
+	powerstring = sanitizepowers(powerstring);
+
+	if (!strcmp(powerstring, ""))
+		return;
+
+	bool error, restricted;
+	int argumentlength, count, splitlength, splitstart, start;
+	int max = 4;
+	int length = strlen(powerstring);
+	str argument = "", classassign = "", classargument = "", split = "";
+	str class = getactorclass(0);
+	str delimiter = ",";
+
+	for (int i = 0; i < length; i++)
+	{
+		if (total == LI_POWERUPS)
+			break;
+
+		if (!strcmp(strmid(powerstring, i, 1), "\n") || i + 1 == length)
+		{
+			split = trim(strmid(strleft(powerstring, i + 1), start, length - start), 1);
+
+			if (!stricmp(strleft(split, 6), "class "))
+			{
+				classassign = strright(split, strlen(split) - 6);
+				split = "";
+
+				if (strcmp(classassign, trim(classassign, 0)))
+				{
+					error = true;
+					errormessage(4);
+					break;
+				}
+
+				if (!stricmp(classassign, "unset"))
+				{
+					if (!strcmp(classargument, ""))
+					{
+						error = true;
+						errormessage(5);
+						break;
+					}
+
+					classassign = "";
+				}
+
+				classargument = classassign;
+			}
+			else if (strcmp(classargument, "") && stricmp(class, classargument))
+			{
+				restricted = true;
+			}
+
+			if (strcmp(split, ""))
+			{
+				splitlength = strlen(split);
+
+				for (int x = 0; x < splitlength; x++)
+				{
+					if (!strcmp(strmid(split, x, 1), delimiter) || x + 1 == splitlength)
+					{
+						if (count < max)
+						{
+							argument = trim(strmid(strleft(split, x + 1), splitstart, splitlength - splitstart), 1);
+
+							if (!strcmp(strright(argument, 1), delimiter))
+							{
+								argumentlength = strlen(argument);
+
+								if (argumentlength > 1)
+									argument = strleft(argument, argumentlength - 1);
+								else
+									argument = "";
+							}
+
+							if (strcmp(argument, ""))
+							{
+								if (count == 2)
+								{
+									if (!stricmp(argument, "berserk"))
+									{
+										if (!restricted)
+											powerups[total][0] = true;
+									}
+									else if (stricmp(argument, "calm"))
+									{
+										error = true;
+										errormessage(count);
+										break;
+									}
+								}
+
+								if (count == 3)
+								{
+									if (!stricmp(argument, "default"))
+									{
+										argument = "";
+									}
+									else if (!validchar(argument, 1))
+									{
+										error = true;
+										errormessage(count);
+										break;
+									}
+								}
+
+								if (!restricted)
+									powerupsvalues[total][count] = argument;
+
+							}
+							else
+							{
+								error = true;
+								errormessage(count);
+								break;
+							}
+						}
+						else
+						{
+							error = true;
+							errormessage(6);
+							break;
+						}
+
+						count++;
+						splitstart = x + 1;
+					}
+				}
+
+				if (!error && count < max)
+				{
+					error = true;
+					errormessage(count);
+				}
+
+				if (error)
+					break;
+
+				count = 0;
+				splitstart = 0;
+
+				if (!restricted)
+					total++;
+			}
+
+			restricted = false;
+			start = i + 1;
+		}
+	}
+
+	if (error || !strcmp(argument, ""))
+	{
+		if (!error)
+			errormessage(-1);
+
+		total = 0;
+	}
 }
 
 function int maxlength(int align, bool index, int limit)
@@ -182,6 +388,27 @@ function str newline(str string)
 	return string;
 }
 
+function str sanitizepowers(str powerstring)
+{
+	bool invalid;
+	str item = "", sanitized = "";
+
+	for (int i = 0; i < strlen(powerstring); i++)
+	{
+		item = strmid(powerstring, i, 1);
+
+		if (!strcmp(strmid(powerstring, i, 2), "//"))
+			invalid = true;
+		else if (invalid && !strcmp(item, "\n"))
+			invalid = false;
+
+		if (!invalid && validchar(item, 0))
+			sanitized = strparam(s:sanitized, s:item);
+	}
+
+	return sanitized;
+}
+
 function void spaceright(str space, int align)
 {
 	int i = maxlength(align, true, 0);
@@ -190,6 +417,59 @@ function void spaceright(str space, int align)
 		text[i] = strparam(s:text[i], s:space);
 	else
 		value[i][0] = strparam(s:value[i][0], s:space);
+}
+
+function str trim(str string, int type)
+{
+	while (trimchar(strleft(string, 1), type))
+		string = strright(string, strlen(string) - 1);
+
+	while (trimchar(strright(string, 1), type))
+		string = strleft(string, strlen(string) - 1);
+
+	return string;
+}
+
+function bool trimchar(str char, int type)
+{
+	if (strlen(char) == 1)
+	{
+		int start;
+		int chars = 4;
+		str trimchars[4] = { ",", ".", "\n", " " };
+
+		if (type)
+			start = 2;
+
+		for (int i = start; i < chars; i++)
+		{
+			if (!stricmp(char, trimchars[i]))
+				return true;
+		}
+	}
+
+	return false;
+}
+
+function bool validchar(str char, int type)
+{
+	if (strlen(char) == 1)
+	{
+		int start;
+		int chars = 40;
+		str validchars[40] = { ",", ".", "\n", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+
+		if (type)
+			start = 14;
+
+		for (int i = start; i < chars; i++)
+		{
+			if (!stricmp(char, validchars[i]))
+				return true;
+		}
+	}
+
+	return false;
 }
 
 /*-------\
@@ -441,24 +721,17 @@ function void levelinfo(void)
 
 		if (showpowerups)
 		{
-			for (i = 0; i < LI_POWERUPS; i++)
+			bool showberserk = getcvar("li_showberserk");
+
+			for (i = 0; i < total; i++)
 			{
 				powerups[i][1] = false;
 
-				if (powerups[i][0] && checkinventory(powerupsvalues[i][0]))
+				if (checkinventory(powerupsvalues[i][0]))
 				{
-					if (i == 0)
+					if (!powerups[i][0] || (powerups[i][0] && showberserk))
 					{
-						if (getcvar("li_showberserk"))
-						{
-							powerups[i][1] = true;
-							text[a] = powerupsvalues[i][1];
-							value[a][0] = formattime(maxnumber(getactorpoweruptics(0, powerupsvalues[i][0]) / LI_TICRATE, LI_MAXTIME));
-						}
-					}
-					else
-					{
-						if (!strcmp(powerupsvalues[i][1], "Immune") || !strcmp(powerupsvalues[i][1], "Suit"))
+						if (!stricmp(powerupsvalues[i][1], "Immune") || !stricmp(powerupsvalues[i][1], "Suit"))
 							cantdrown = true;
 
 						powerups[i][1] = true;
@@ -593,7 +866,7 @@ function void levelinfo(void)
 			bool activepowerup = false;
 			a = 6;
 
-			for (i = 0; i < LI_POWERUPS; i++)
+			for (i = 0; i < total; i++)
 			{
 				if (powerups[i][1])
 				{
@@ -604,7 +877,7 @@ function void levelinfo(void)
 						values = newline(values);
 					}
 
-					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(powerupsvalues[i][2], text[a], true));
+					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(powerupsvalues[i][3], text[a], true));
 					values = strparam(s:newline(values), s:spaceleft, s:value[a][0]);
 				}
 
@@ -691,7 +964,7 @@ script "levelinfoenter" ENTER
 	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
 		terminate;
 
-	levelassign(getactorclass(0));
+	powerassign(scriptcall("levelinfobridge", "powerassign"));
 	acs_namedexecute("levelinfo", 0);
 }
 

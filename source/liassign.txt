@@ -1,0 +1,83 @@
+// -------------------------
+// LevelInfo Assignment Lump
+// -------------------------
+//
+// This file allows you to customize LevelInfo's power-up timers without having to modify any source code. It is
+// processed when found in the root of any loaded archive. If multiple lumps are detected, only the last one in the
+// load order will be read. A maximum of 25 power-ups can be assigned at once.
+//
+// Power-up assignments consist of 4 comma-separated values that are differentiated by newlines. The order of the list
+// is determined by the order of the input. The syntax for adding power-ups is straightforward:
+//
+// PowerClass, PowerName, BerserkToken, PowerColor
+//
+// PowerClass is the class name assigned to a power-up. PowerName is the name you wish to display in the list. A
+// BerserkToken is used to determine whether or not a power-up acts like the berserk pack (it lasts until the end of a
+// map). Use "berserk" to indicate yes or "calm" to indicate no. This is checked when the "show berserk status" option
+// is disabled.
+//
+// PowerColor is the color you wish to use when "show colored text" is enabled. This uses the ZDoom color codes found
+// at "https://zdoom.org/wiki/Print#Colors". If you do not wish to specify a color, you can set this to "default"
+// and the internal default (dark gray) will be used.
+//
+// Here are some examples:
+//
+// PowerStrength, Berserk, berserk, g
+//
+// This will add a power-up with the "PowerStrength" class, display "Berserk" in the list, designate that it's to be
+// treated like a berserk pack, and use the red color.
+//
+// PowerInvisibility, Hidden, calm, default
+//
+// This will add a power-up with the "PowerInvisibility" class, display "Hidden" in the list, designate that it's
+// not to be treated like a berserk pack, and use the default color.
+//
+// In addition to power-ups, you can also specify a player class to restrict them to. This can be used with mods that
+// employ different power-ups for each player class. To have a power-up show only when a specific class is loaded, use
+// the class identifier:
+//
+// Class DoomPlayer
+//     PowerInvulnerable, Immune, calm, k
+//
+// This will tell LevelInfo to only include the invulnerability power-up when the "DoomPlayer" class has been detected.
+// You can combine this with the "Class Unset" command to have power-ups appear with all player classes:
+//
+// Class DoomPlayer
+//     PowerInvulnerable, Immune, calm, k
+//     PowerInvisibility, Hidden, calm, n
+// Class Unset
+// PowerIronfeet, Suit, calm, d
+//
+// The above will show the invulnerability and invisibility power-ups when "DoomPlayer" is detected and display the rad
+// suit to all player classes.
+//
+// For a final example, see the default configuration below. It will display the appropriate power-up timers for Doom,
+// Heretic, and Hexen.
+
+Class DoomPlayer
+	PowerStrength, Berserk, berserk, g
+	PowerInvisibility, Hidden, calm, n
+	PowerInvulnerable, Immune, calm, k
+	PowerLightamp, Light, calm, f
+	PowerIronfeet, Suit, calm, d
+Class HereticPlayer
+	PowerFlight, Flight, calm, z
+	PowerGhost, Hidden, calm, n
+	PowerInvulnerable, Immune, calm, k
+	PowerTorch, Light, calm, f
+	PowerWeaponlevel2, Power, calm, g
+Class ClericPlayer
+	PowerFlight, Flight, calm, z
+	PowerInvulnerable, Immune, calm, k
+	PowerSpeed, Fast, calm, i
+	PowerTorch, Light, calm, f
+Class FighterPlayer
+	PowerFlight, Flight, calm, z
+	PowerInvulnerable, Immune, calm, k
+	PowerSpeed, Fast, calm, i
+	PowerTorch, Light, calm, f
+Class MagePlayer
+	PowerFlight, Flight, calm, z
+	PowerInvulnerable, Immune, calm, k
+	PowerSpeed, Fast, calm, i
+	PowerTorch, Light, calm, f
