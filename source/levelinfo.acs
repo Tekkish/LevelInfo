@@ -965,7 +965,7 @@ script "levelinfoenter" ENTER
 		terminate;
 
 	powerassign(scriptcall("levelinfobridge", "powerassign"));
-	acs_namedexecute("levelinfo", 0);
+	acs_namedexecutewithresult("levelinfo", 0);
 }
 
 script "levelinforespawn" RESPAWN
@@ -976,5 +976,5 @@ script "levelinforespawn" RESPAWN
 	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
 		terminate;
 
-	acs_namedexecute("levelinfo", 0);
+	acs_namedexecutewithresult("levelinfo", 0);
 }

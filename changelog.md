@@ -1,3 +1,6 @@
+## April 29, 2023 (v1.34)
+- Fixed an oversight that caused a loading delay when spawning.
+
 ## April 27, 2023 (v1.33)
 - Allowed the use of dashes and underscores in assignment lumps.
 
