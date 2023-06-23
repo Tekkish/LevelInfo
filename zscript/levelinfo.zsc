@@ -6,13 +6,13 @@ class levelinfobridge
 {
 	ui private static bool checkinventory(string inventoryitem)
 	{
+		class<Inventory> inventory = inventoryitem;
 		playerinfo player = players[consoleplayer];
 
-		for (inventory item = player.mo.inv; item != null; item = item.inv)
-		{
-			if (item.getclassname() == inventoryitem)
-				return true;
-		}
+		let item = player.mo.findinventory(inventory);
+
+		if (item)
+			return true;
 
 		return false;
 	}
