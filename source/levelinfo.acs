@@ -899,12 +899,11 @@ function void levelinfo(void)
 		if (showlevelinfo)
 		{
 			int highlightcolor = getcvar("li_highlightcolor");
-			str colorvalue = "";
 
 			if (highlightcolor < 1 || highlightcolor > 17)
 				highlightcolor = 17;
 
-			colorvalue = getcolor(highlightcolor);
+			str colorvalue = getcolor(highlightcolor);
 
 			if (monsterstotal)
 			{
