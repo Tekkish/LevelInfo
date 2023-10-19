@@ -10,6 +10,7 @@ OptionMenu "LI_Options"
 	StaticText ""
 	StaticText "General Options", 1
 	ScaleSlider "Abbreviated Characters", "li_abbreviate", 0, 8, 1, "None"
+	Option "Highlight Color", "li_highlightcolor", "LI_Color"
 	Option "Highlight Values", "li_highlightvalue", "LI_YesNo"
 	Slider "Opacity Percentage", "li_opacity", 10, 100, 1, 0
 	Option "Show Active Powerups", "li_showpowerups", "LI_YesNo"
@@ -59,6 +60,27 @@ OptionValue "LI_AlignY"
 {
 	0, "Top"
 	1, "Bottom"
+}
+
+OptionValue "LI_Color"
+{
+	1, "Blue"
+	2, "Brown"
+	3, "Cream"
+	4, "Cyan"
+	5, "Dark Gray"
+	6, "Dark Green"
+	7, "Dark Red"
+	8, "Gray"
+	9, "Green"
+	10, "Olive"
+	11, "Orange"
+	12, "Pink"
+	13, "Purple"
+	14, "Red"
+	15, "Sapphire"
+	16, "Teal"
+	17, "Yellow"
 }
 
 OptionValue "LI_Position"

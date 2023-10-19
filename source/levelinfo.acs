@@ -11,7 +11,6 @@
 #define LI_COLOR_OXYGEN	"v"
 #define LI_COLOR_POISON	"q"
 #define LI_COLOR_RADS	"x"
-#define LI_COLOR_VALUE	"k"
 #define LI_FLAGS		HUDMSG_PLAIN | HUDMSG_ALPHA | HUDMSG_NOWRAP
 #define LI_ID_TEXTS		160000
 #define LI_ID_VALUES	LI_ID_TEXTS + 1
@@ -165,6 +164,81 @@ function str generatespace(int amount, int type)
 	}
 
 	return space;
+}
+
+function str getcolor(int color)
+{
+	switch (color)
+	{
+		case 1: // Blue
+			color = "n";
+			break;
+
+		case 2: // Brown
+			color = "s"; 
+			break;
+
+		case 3:
+			color = "o";
+			break;	
+
+		case 4:
+			color = "v";
+			break;
+
+		case 5: // Dark Gray
+			color = "m";
+			break;
+
+		case 6:
+			color = "q";
+			break;
+
+		case 7:
+			color = "r";
+			break;
+
+		case 8: // Gray
+			color = "u";
+			break;
+
+		case 9:
+			color = "d";
+			break;
+
+		case 10:
+			color = "p";
+			break;
+
+		case 11:
+			color = "i";
+			break;
+
+		case 12: // Pink
+			color = "a";
+			break;
+
+		case 13:
+			color = "t";
+			break;
+
+		case 14:
+			color = "g";
+			break;
+
+		case 15:
+			color = "y";
+			break;
+
+		case 16:
+			color = "z";
+			break;
+
+		case 17:
+			color = "k";
+	}
+
+	return color;
 }
 
 function void powerassign(str powerstring)
@@ -824,33 +898,41 @@ function void levelinfo(void)
 
 		if (showlevelinfo)
 		{
+			int highlightcolor = getcvar("li_highlightcolor");
+			str colorvalue = "";
+
+			if (highlightcolor < 1 || highlightcolor > 17)
+				highlightcolor = 17;
+
+			colorvalue = getcolor(highlightcolor);
+
 			if (monsterstotal)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[0], true));
-				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[0][0], highlight[0]));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[0][0], highlight[0]));
 			}
 
 			if (showitems && itemstotal)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[1], true));
-				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[1][0], highlight[1]));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[1][0], highlight[1]));
 			}
 
 			if (secretstotal)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[2], true));
-				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[2][0], highlight[2]));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[2][0], highlight[2]));
 			}
 
 			if (showtime)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[3], true));
-				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[3][0], highlight[3]));
+				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[3][0], highlight[3]));
 
 				if (showpar)
 				{
 					texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[4], true));
-					values = strparam(s:newline(values), s:spaceleft, s:coloredtext(LI_COLOR_VALUE, value[4][0], highlight[3]));
+					values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[4][0], highlight[3]));
 				}
 
 				if (showtotaltime)

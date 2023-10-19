@@ -1,3 +1,6 @@
+## October 19, 2023 (v1.36)
+- Added an option to change the highlight color.
+
 ## June 23, 2023 (v1.35)
 - Minor code changes.
 

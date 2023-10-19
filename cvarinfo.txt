@@ -15,6 +15,7 @@ user bool li_showtime = true;
 user bool li_showtotaltime = false;
 user bool li_visible = true;
 user int li_abbreviate = 0;
+user int li_highlightcolor = 17;
 user int li_opacity = 100;
 user int li_position = 4;
 user int li_showpercentage = 0;
