@@ -155,6 +155,17 @@ class levelinfobridge
 					"PowerIronFeet, Suit, calm, d";
 			}
 
+			// NAKU-NARU 2
+			else if (playerclass == "NakuPlayer")
+			{
+				powerassignment =
+					"Damageupper, Damage, calm, t"				.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerIronFeet, Suit, calm, d";
+			}
+
 			// Project Brutality
 			else if (playerclass == "PB_Doomer")
 			{
