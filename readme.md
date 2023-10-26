@@ -23,6 +23,7 @@ LevelInfo has been customized for use with the following mods:
 - Flakes Doom
 - Final Doomer
 - NAKU-NARU
+- NAKU-NARU 2
 - Project Brutality 3.0
 - Shazam
 - Weapons of Saturn
