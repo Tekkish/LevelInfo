@@ -998,11 +998,10 @@ function void levelinfo(void)
 
 		if (strcmp(texts, ""))
 		{
-			bool showonmap = getcvar("li_showonmap");
 			int opacity = getcvar("li_opacity");
 			str font = "SHAFONT";
 
-			if (showonmap)
+			if (getcvar("li_showonmap"))
 				flags = LI_FLAGS;
 			else
 				flags = LI_FLAGS | HUDMSG_NOTWITHFULLMAP;
