@@ -26,4 +26,5 @@ LevelInfo has been customized for use with the following mods:
 - NAKU-NARU 2
 - Project Brutality 3.0
 - Shazam
+- Supercharge
 - Weapons of Saturn

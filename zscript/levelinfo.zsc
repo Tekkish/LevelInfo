@@ -180,6 +180,17 @@ class levelinfobridge
 					"PowerTimeFreezer, Time, calm, p";
 			}
 
+			// Supercharge
+			else if (playerclass == "TangoPlayer")
+			{
+				powerassignment =
+					"TangoPowerStrength, Berserk, berserk, g"	.. "\n" ..
+					"PowerInvisibility, Hidden, calm, n"		.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerLightamp, Light, calm, f"				.. "\n" ..
+					"PowerIronFeet, Suit, calm, d";
+			}
+
 			// Doom, Heretic, Hexen, Strife
 			else
 			{
