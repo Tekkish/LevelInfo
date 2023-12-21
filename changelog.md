@@ -1,3 +1,6 @@
+## December 21, 2023 (v1.39)
+- Added options to display the level name and author when entering a map.
+
 ## October 27, 2023 (v1.38)
 - Added support for Supercharge.
 

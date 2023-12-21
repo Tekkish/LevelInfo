@@ -17,6 +17,11 @@ class levelinfobridge
 		return false;
 	}
 
+	ui private static string getauthorname()
+	{
+		return level.authorname;
+	}
+
 	ui private static int getconsoleplayer()
 	{
 		return consoleplayer;
@@ -26,6 +31,11 @@ class levelinfobridge
 	{
 		playerinfo player = players[consoleplayer];
 		return player.hazardcount;
+	}
+
+	ui private static string getlevelname()
+	{
+		return level.levelname;
 	}
 
 	ui private static int getmorph()

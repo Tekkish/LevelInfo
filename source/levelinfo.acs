@@ -12,8 +12,11 @@
 #define LI_COLOR_POISON	"q"
 #define LI_COLOR_RADS	"x"
 #define LI_FLAGS		HUDMSG_PLAIN | HUDMSG_ALPHA | HUDMSG_NOWRAP
-#define LI_ID_TEXTS		160000
-#define LI_ID_VALUES	LI_ID_TEXTS + 1
+#define LI_ID_AUTHOR	160000
+#define LI_ID_FLASH		LI_ID_AUTHOR + 1
+#define LI_ID_NAME		LI_ID_AUTHOR + 2
+#define LI_ID_TEXTS		LI_ID_AUTHOR + 3
+#define LI_ID_VALUES	LI_ID_AUTHOR + 4
 #define LI_MAXNUMBER	99999
 #define LI_MAXTIME		356400
 #define LI_POISONTICS	10
@@ -255,6 +258,7 @@ function void powerassign(str powerstring)
 	str argument = "", classassign = "", classargument = "", split = "";
 	str class = getactorclass(0);
 	str delimiter = ",";
+	int delimiterlength = strlen(delimiter);
 
 	for (int i = 0; i < length; i++)
 	{
@@ -302,18 +306,18 @@ function void powerassign(str powerstring)
 
 				for (int x = 0; x < splitlength; x++)
 				{
-					if (!strcmp(strmid(split, x, 1), delimiter) || x + 1 == splitlength)
+					if (!strcmp(strmid(split, x, delimiterlength), delimiter) || x + 1 == splitlength)
 					{
 						if (count < max)
 						{
-							argument = trim(strmid(strleft(split, x + 1), splitstart, splitlength - splitstart), 1);
+							argument = trim(strmid(strleft(split, x + delimiterlength), splitstart, splitlength - splitstart), 1);
 
-							if (!strcmp(strright(argument, 1), delimiter))
+							if (!strcmp(strright(argument, delimiterlength), delimiter))
 							{
 								argumentlength = strlen(argument);
 
 								if (argumentlength > 1)
-									argument = strleft(argument, argumentlength - 1);
+									argument = strleft(argument, argumentlength - delimiterlength);
 								else
 									argument = "";
 							}
@@ -367,7 +371,7 @@ function void powerassign(str powerstring)
 						}
 
 						count++;
-						splitstart = x + 1;
+						splitstart = x + delimiterlength;
 					}
 				}
 
@@ -1045,6 +1049,86 @@ script "levelinfoenter" ENTER
 
 	powerassign(scriptcall("levelinfobridge", "powerassign"));
 	acs_namedexecutewithresult("levelinfo", 0);
+	acs_namedexecutewithresult("levelinfonameauthor", 0);
+}
+
+script "levelinfonameauthor" (void)
+{
+	if (getcvar("li_shownameauthor"))
+	{
+		str levelname = scriptcall("levelinfobridge", "getlevelname");
+
+		if (strcmp(levelname, ""))
+		{
+			int flags = HUDMSG_FADEINOUT | HUDMSG_NOWRAP;
+			int length = strlen(levelname);
+			str authorname = scriptcall("levelinfobridge", "getauthorname");
+			str delimiter = " - ";
+			int delimiterlength = strlen(delimiter);
+
+			for (int i = 0; i < length; i++)
+			{
+				if (!strcmp(strmid(levelname, i, delimiterlength), delimiter))
+				{
+					if (!strcmp(authorname, ""))
+						authorname = strright(levelname, length - delimiterlength - i);
+
+					levelname = strleft(levelname, i);
+					break;
+				}
+			}
+
+			int authordelay = getcvar("li_authordelay");
+
+			if (authordelay != 0 && authordelay != 1 && authordelay != 2)
+				authordelay = 2;
+
+			int color = getcvar("li_namecolor");
+
+			if (color < 1 || color > 17)
+				color = 14;
+
+			int fadein = getcvar("li_nameauthorfadein");
+			int fadeout = getcvar("li_nameauthorfadeout");
+
+			if (fadein < 0 || fadein > 2.0)
+				fadein = 1.0;
+
+			if (fadeout < 0 || fadeout > 2.0)
+				fadeout = 1.0;
+
+			int hold = getcvar("li_nameauthorhold");
+
+			if (hold < 5.0 || hold > 10.0)
+				hold = 6.0;
+
+			int width = 320;
+			int height = 200;
+			int x = width * 0.5;
+			int y = height * 0.2;
+
+			delay(LI_TICRATE * 1);
+			setfont("BIGFONT");
+			sethudsize(width, height, true);
+			hudmessage(s:coloredtext(getcolor(color), levelname, true); flags, LI_ID_NAME, LI_BASECOLOR, x, y + 0.1, hold, fadein, fadeout);
+
+			if (strcmp(authorname, ""))
+			{
+				delay(LI_TICRATE * authordelay);
+				setfont("SMALLFONT");
+				hudmessage(s:authorname; flags, LI_ID_AUTHOR, CR_GRAY, x, y + 16.1, hold - (authordelay << 16), fadein, fadeout);
+			}
+
+			if (getcvar("li_shownameflash"))
+			{
+				delay(LI_TICRATE * 2);
+				setfont("BIGFONT");
+				hudmessage(s:levelname; flags, LI_ID_FLASH, CR_WHITE, x, y + 0.1, 0.0, 0.25, 0.75);
+			}
+
+			sethudsize(0, 0, false);
+		}
+	}
 }
 
 script "levelinforespawn" RESPAWN

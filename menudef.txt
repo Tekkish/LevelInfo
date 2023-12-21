@@ -27,6 +27,18 @@ OptionMenu "LI_Options"
 	Option "Use Doom Font", "li_doomfont", "LI_YesNo"
 	Option "Value Alignment", "li_alignvalue", "LI_AlignValue"
 	StaticText ""
+	StaticText "Name & Author Options", 1
+	StaticText "You can instruct LevelInfo to show the map"
+	StaticText "name and author when entering a level."
+	StaticText ""
+	Option "Show Name & Author", "li_shownameauthor", "LI_YesNo"
+	Option "Author Delay", "li_authordelay", "LI_AuthorDelay"
+	Slider "Fade In Time in Seconds", "li_nameauthorfadein", 0.0, 2.0, 0.1, 2
+	Slider "Fade Out Time in Seconds", "li_nameauthorfadeout", 0.0, 2.0, 0.1, 2
+	Slider "Hold Time in Seconds", "li_nameauthorhold", 5.0, 10.0, 0.1, 2
+	Option "Name Color", "li_namecolor", "LI_Color"
+	Option "Show Name Flash", "li_shownameflash", "LI_YesNo"
+	StaticText ""
 	StaticText "Position Options", 1
 	StaticText "You can specify a custom position"
 	StaticText "for LevelInfo below. Note that it's"
@@ -60,6 +72,13 @@ OptionValue "LI_AlignY"
 {
 	0, "Top"
 	1, "Bottom"
+}
+
+OptionValue "LI_AuthorDelay"
+{
+	0, "None"
+	1, "1 Second"
+	2, "2 Seconds"
 }
 
 OptionValue "LI_Color"
