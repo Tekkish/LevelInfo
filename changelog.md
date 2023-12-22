@@ -1,3 +1,6 @@
+## December 22, 2023 (v1.40)
+- Improved the map author detection.
+
 ## December 21, 2023 (v1.39)
 - Added options to display the level name and author when entering a map.
 

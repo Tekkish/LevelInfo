@@ -1060,15 +1060,28 @@ script "levelinfonameauthor" (void)
 
 		if (strcmp(levelname, ""))
 		{
+			bool found;
+			int delimiterlength;
+			int delimiters = 3;
 			int flags = HUDMSG_FADEINOUT | HUDMSG_NOWRAP;
 			int length = strlen(levelname);
 			str authorname = scriptcall("levelinfobridge", "getauthorname");
-			str delimiter = " - ";
-			int delimiterlength = strlen(delimiter);
+			str delimiter[3] = { " - by: ", " - by ", " - " };
 
 			for (int i = 0; i < length; i++)
 			{
-				if (!strcmp(strmid(levelname, i, delimiterlength), delimiter))
+				for (int a = 0; a < delimiters; a++)
+				{
+					delimiterlength = strlen(delimiter[a]);
+
+					if (!stricmp(strmid(levelname, i, delimiterlength), delimiter[a]))
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (found)
 				{
 					if (!strcmp(authorname, ""))
 						authorname = strright(levelname, length - delimiterlength - i);
