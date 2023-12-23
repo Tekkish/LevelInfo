@@ -19,7 +19,7 @@ class levelinfobridge
 
 	ui private static string getauthorname()
 	{
-		return level.authorname;
+		return stringtable.localize(level.authorname);
 	}
 
 	ui private static int getconsoleplayer()
@@ -35,13 +35,28 @@ class levelinfobridge
 
 	ui private static string getlevelname()
 	{
-		return level.levelname;
+		return stringtable.localize(level.levelname);
+	}
+
+	ui private static string getmapname()
+	{
+		return level.mapname;
 	}
 
 	ui private static int getmorph()
 	{
 		playerinfo player = players[consoleplayer];
 		return player.morphtics;
+	}
+
+	ui private static bool getnoautosavehint()
+	{
+		bool noautosavehint;
+
+		if (level.info && level.info.flags2 & LEVEL2_NOAUTOSAVEHINT)
+			noautosavehint = true;
+
+		return noautosavehint;
 	}
 
 	ui private static int getpoison()

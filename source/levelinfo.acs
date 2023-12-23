@@ -1041,15 +1041,12 @@ script "levelinfodeath" DEATH
 
 script "levelinfoenter" ENTER
 {
-	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall("levelinfobridge", "getconsoleplayer") || scriptcall("levelinfobridge", "getnoautosavehint"))
 		terminate;
 
-	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
-		terminate;
-
+	acs_namedexecutewithresult("levelinfonameauthor", 0);
 	powerassign(scriptcall("levelinfobridge", "powerassign"));
 	acs_namedexecutewithresult("levelinfo", 0);
-	acs_namedexecutewithresult("levelinfonameauthor", 0);
 }
 
 script "levelinfonameauthor" (void)
@@ -1091,6 +1088,14 @@ script "levelinfonameauthor" (void)
 				}
 			}
 
+			if (getcvar("li_showmapnumber"))
+			{
+				str mapname = scriptcall("levelinfobridge", "getmapname");
+
+				if (strcmp(mapname, ""))
+					levelname = strparam(s:mapname, s:": ", s:levelname);
+			}
+
 			int authordelay = getcvar("li_authordelay");
 
 			if (authordelay != 0 && authordelay != 1 && authordelay != 2)
@@ -1115,12 +1120,30 @@ script "levelinfonameauthor" (void)
 			if (hold < 5.0 || hold > 10.0)
 				hold = 6.0;
 
-			int width = 320;
-			int height = 200;
-			int x = width * 0.5;
-			int y = height * 0.2;
+			int namedelay = getcvar("li_namedelay");
 
-			delay(LI_TICRATE * 1);
+			if (namedelay != 0 && namedelay != 1 && namedelay != 2)
+				namedelay = 1;
+
+			int scale = getcvar("li_nameauthorscale");
+
+			if (!scale)
+				scale = getcvar("con_scaletext");
+
+			if (scale < 1 || scale > 8)
+				scale = 3;
+
+			int basewidth = 320;
+			int baseheight = 240;
+			int width = getscreenwidth();
+			int height = getscreenheight();
+
+			width = ((width * ((basewidth << 16) / ((width << 16) / ((height << 16) / baseheight)))) >> 16) / scale;
+			height = height / scale;
+			int x = (width / 2) << 16;
+			int y = (height / 5) << 16;
+
+			delay(LI_TICRATE * namedelay);
 			setfont("BIGFONT");
 			sethudsize(width, height, true);
 			hudmessage(s:coloredtext(getcolor(color), levelname, true); flags, LI_ID_NAME, LI_BASECOLOR, x, y + 0.1, hold, fadein, fadeout);
@@ -1146,10 +1169,7 @@ script "levelinfonameauthor" (void)
 
 script "levelinforespawn" RESPAWN
 {
-	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
-		terminate;
-
-	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)))
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall("levelinfobridge", "getconsoleplayer") || scriptcall("levelinfobridge", "getnoautosavehint"))
 		terminate;
 
 	acs_namedexecutewithresult("levelinfo", 0);

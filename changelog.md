@@ -1,3 +1,10 @@
+## December 23, 2023 (v1.41)
+- Added a setting to show map numbers with names.
+- Added scaling choices for map names and authors.
+- Fixed a localization issue with map names and authors.
+- The add-on no longer starts on intro or demo styled maps.
+- The map name delay can now be modified.
+
 ## December 22, 2023 (v1.40)
 - Improved the map author detection.
 

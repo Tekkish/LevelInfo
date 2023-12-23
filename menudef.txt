@@ -32,12 +32,15 @@ OptionMenu "LI_Options"
 	StaticText "name and author when entering a level."
 	StaticText ""
 	Option "Show Name & Author", "li_shownameauthor", "LI_YesNo"
-	Option "Author Delay", "li_authordelay", "LI_AuthorDelay"
+	Option "Author Delay", "li_authordelay", "LI_Delay"
 	Slider "Fade In Time in Seconds", "li_nameauthorfadein", 0.0, 2.0, 0.1, 2
 	Slider "Fade Out Time in Seconds", "li_nameauthorfadeout", 0.0, 2.0, 0.1, 2
 	Slider "Hold Time in Seconds", "li_nameauthorhold", 5.0, 10.0, 0.1, 2
 	Option "Name Color", "li_namecolor", "LI_Color"
+	Option "Name Delay", "li_namedelay", "LI_Delay"
+	Option "Show Map Number", "li_showmapnumber", "LI_YesNo"
 	Option "Show Name Flash", "li_shownameflash", "LI_YesNo"
+	ScaleSlider "Text Scaling", "li_nameauthorscale", 0, 8, 1, "Default"
 	StaticText ""
 	StaticText "Position Options", 1
 	StaticText "You can specify a custom position"
@@ -74,13 +77,6 @@ OptionValue "LI_AlignY"
 	1, "Bottom"
 }
 
-OptionValue "LI_AuthorDelay"
-{
-	0, "None"
-	1, "1 Second"
-	2, "2 Seconds"
-}
-
 OptionValue "LI_Color"
 {
 	1, "Blue"
@@ -100,6 +96,13 @@ OptionValue "LI_Color"
 	15, "Sapphire"
 	16, "Teal"
 	17, "Yellow"
+}
+
+OptionValue "LI_Delay"
+{
+	0, "None"
+	1, "1 Second"
+	2, "2 Seconds"
 }
 
 OptionValue "LI_Position"
