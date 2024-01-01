@@ -1117,7 +1117,7 @@ script "levelinfonameauthor" (void)
 
 			int hold = getcvar("li_nameauthorhold");
 
-			if (hold < 5.0 || hold > 10.0)
+			if (hold < 3.0 || hold > 10.0)
 				hold = 6.0;
 
 			int namedelay = getcvar("li_namedelay");
@@ -1155,7 +1155,7 @@ script "levelinfonameauthor" (void)
 				hudmessage(s:authorname; flags, LI_ID_AUTHOR, CR_GRAY, x, y + 16.1, hold - (authordelay << 16), fadein, fadeout);
 			}
 
-			if (getcvar("li_shownameflash"))
+			if (getcvar("li_shownameflash") && hold >= 5.0)
 			{
 				delay(LI_TICRATE * 2);
 				setfont("BIGFONT");

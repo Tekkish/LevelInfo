@@ -1,3 +1,6 @@
+## January 1, 2024 (v1.42)
+- The name and author hold time can now be reduced to 3 seconds. This will disable the name flash.
+
 ## December 23, 2023 (v1.41)
 - Added a setting to show map numbers with names.
 - Added scaling choices for map names and authors.
