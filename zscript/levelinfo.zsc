@@ -22,6 +22,12 @@ class levelinfobridge
 		return stringtable.localize(level.authorname);
 	}
 
+	ui private static string getclass()
+	{
+		playerinfo player = players[consoleplayer];
+		return player.mo.getclassname();
+	}
+
 	ui private static int getconsoleplayer()
 	{
 		return consoleplayer;
@@ -31,6 +37,29 @@ class levelinfobridge
 	{
 		playerinfo player = players[consoleplayer];
 		return player.hazardcount;
+	}
+
+	ui private static int getinventory(string inventoryitem, bool powerup)
+	{
+		class<Inventory> inventory = inventoryitem;
+		playerinfo player = players[consoleplayer];
+
+		if (powerup)
+		{
+			let item = powerup(player.mo.findinventory(inventory));
+
+			if (item)
+				return item.effecttics;
+		}
+		else
+		{
+			let item = player.mo.findinventory(inventory);
+
+			if (item)
+				return item.amount;
+		}
+
+		return 0;
 	}
 
 	ui private static string getlevelname()
@@ -47,6 +76,16 @@ class levelinfobridge
 	{
 		playerinfo player = players[consoleplayer];
 		return player.morphtics;
+	}
+
+	ui private static int getoxygen()
+	{
+		playerinfo player = players[consoleplayer];
+
+		if (player.health > 0 && player.mo.waterlevel == 3 && !(player.cheats & (CF_GODMODE | CF_GODMODE2)))
+			return max(player.air_finished - level.maptime, -1);
+
+		return -2;
 	}
 
 	ui private static bool getnoautosavehint()
@@ -74,7 +113,6 @@ class levelinfobridge
 	{
 		int lump = -1;
 		int lumps;
-		playerinfo player = players[consoleplayer];
 		string powerassignment;
 
 		for (int i = 0; lumps != -1; i++)
@@ -91,7 +129,7 @@ class levelinfobridge
 		}
 		else
 		{
-			string playerclass = player.mo.getclassname();
+			string playerclass = getclass();
 
 			// Argent
 			if (playerclass == "ArgPlayer")

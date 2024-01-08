@@ -6,6 +6,7 @@
 #include "zcommon.acs"
 
 #define LI_BASECOLOR	CR_WHITE
+#define LI_BRIDGE		"levelinfobridge"
 #define LI_COLOR_DARK	"u"
 #define LI_COLOR_MORPH	"s"
 #define LI_COLOR_OXYGEN	"v"
@@ -244,6 +245,11 @@ function str getcolor(int color)
 	return color;
 }
 
+function int getcvarplayer(str cvar)
+{
+	return getusercvar(scriptcall(LI_BRIDGE, "getconsoleplayer"), cvar);
+}
+
 function void powerassign(str powerstring)
 {
 	powerstring = sanitizepowers(powerstring);
@@ -256,7 +262,7 @@ function void powerassign(str powerstring)
 	int max = 4;
 	int length = strlen(powerstring);
 	str argument = "", classassign = "", classargument = "", split = "";
-	str class = getactorclass(0);
+	str class = scriptcall(LI_BRIDGE, "getclass");
 	str delimiter = ",";
 	int delimiterlength = strlen(delimiter);
 
@@ -555,10 +561,10 @@ function bool validchar(str char, int type)
 
 function void levelinfo(void)
 {
-	if (getcvar("li_visible"))
+	if (getcvarplayer("li_visible"))
 	{
 		bool alignx, aligny;
-		bool position = getcvar("li_position");
+		bool position = getcvarplayer("li_position");
 		int offsetx = 1;
 		int offsety = 1;
 		int x, y;
@@ -567,10 +573,10 @@ function void levelinfo(void)
 		switch (position)
 		{
 			case 0:
-				alignx = getcvar("li_alignx");
-				aligny = getcvar("li_aligny");
-				x = getcvar("li_x");
-				y = getcvar("li_y");
+				alignx = getcvarplayer("li_alignx");
+				aligny = getcvarplayer("li_aligny");
+				x = getcvarplayer("li_x");
+				y = getcvarplayer("li_y");
 
 				if (x < 0 || x > 90)
 					x = 0;
@@ -647,9 +653,9 @@ function void levelinfo(void)
 				y = 0.0;
 		}
 
-		bool highlightvalue = getcvar("li_highlightvalue");
-		bool showlevelinfo = getcvar("li_showlevelinfo");
-		int showpercentage = getcvar("li_showpercentage");
+		bool highlightvalue = getcvarplayer("li_highlightvalue");
+		bool showlevelinfo = getcvarplayer("li_showlevelinfo");
+		int showpercentage = getcvarplayer("li_showpercentage");
 		int flags, i, items, itemstotal, monsters, monsterstotal, secrets, secretstotal;
 		str percentage = "", texts = "", values = "";
 
@@ -667,8 +673,8 @@ function void levelinfo(void)
 
 		if (showlevelinfo)
 		{
-			bool showitems = getcvar("li_showitems");
-			bool showtime = getcvar("li_showtime");
+			bool showitems = getcvarplayer("li_showitems");
+			bool showtime = getcvarplayer("li_showtime");
 
 			itemstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_ITEMS), LI_MAXNUMBER);
 			monsterstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_MONSTERS), LI_MAXNUMBER);
@@ -754,8 +760,8 @@ function void levelinfo(void)
 
 			if (showtime && (itemstotal || monsterstotal || secretstotal))
 			{
-				bool showpar = getcvar("li_showpar");
-				bool showtotaltime = getcvar("li_showtotaltime");
+				bool showpar = getcvarplayer("li_showpar");
+				bool showtotaltime = getcvarplayer("li_showtotaltime");
 				int timemap = maxnumber(timer() / LI_TICRATE, LI_MAXTIME);
 				int timepar = maxnumber(getlevelinfo(LEVELINFO_PAR_TIME), LI_MAXTIME);
 
@@ -777,7 +783,7 @@ function void levelinfo(void)
 
 				if (showtotaltime)
 				{
-					int timetotal = scriptcall("levelinfobridge", "gettotaltime");
+					int timetotal = scriptcall(LI_BRIDGE, "gettotaltime");
 
 					if (timetotal)
 					{
@@ -793,18 +799,18 @@ function void levelinfo(void)
 		}
 
 		bool cantdrown;
-		bool showpowerups = getcvar("li_showpowerups");
+		bool showpowerups = getcvarplayer("li_showpowerups");
 		int a = 6;
 
 		if (showpowerups)
 		{
-			bool showberserk = getcvar("li_showberserk");
+			bool showberserk = getcvarplayer("li_showberserk");
 
 			for (i = 0; i < total; i++)
 			{
 				powerups[i][1] = false;
 
-				if (checkinventory(powerupsvalues[i][0]))
+				if (scriptcall(LI_BRIDGE, "getinventory", powerupsvalues[i][0], false))
 				{
 					if (!powerups[i][0] || (powerups[i][0] && showberserk))
 					{
@@ -813,7 +819,7 @@ function void levelinfo(void)
 
 						powerups[i][1] = true;
 						text[a] = powerupsvalues[i][1];
-						value[a][0] = formattime(maxnumber(fixeddiv((getactorpoweruptics(0, powerupsvalues[i][0]) << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME));
+						value[a][0] = formattime(maxnumber(fixeddiv((scriptcall(LI_BRIDGE, "getinventory", powerupsvalues[i][0], true) << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME));
 					}
 				}
 
@@ -822,26 +828,31 @@ function void levelinfo(void)
 		}
 
 		bool havemorph, haveoxygen, havepoison, haverads;
-		bool showhazards = getcvar("li_showhazards");
-		bool showoxygen = getcvar("li_showoxygen");
+		bool showhazards = getcvarplayer("li_showhazards");
+		bool showoxygen = getcvarplayer("li_showoxygen");
 
-		if (showoxygen && !cantdrown && (classifyactor(0) & ACTOR_ALIVE) && getactorproperty(0, APROP_Waterlevel) == 3)
+		if (showoxygen && !cantdrown)
 		{
-			int oxygen = maxnumber(fixeddiv((getairsupply(playernumber()) << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME);
+			int oxygen = scriptcall(LI_BRIDGE, "getoxygen");
 
-			if (oxygen < 0)
-				oxygen = 0;
+			if (oxygen >= -1)
+			{
+				oxygen = maxnumber(fixeddiv((oxygen << 16) + (LI_TICRATE << 16), LI_TICRATE << 16) >> 16, LI_MAXTIME);
 
-			haveoxygen = true;
-			text[LI_TOTAL - 3] = "Oxygen";
-			value[LI_TOTAL - 3][0] = formattime(oxygen);
+				if (oxygen < 0)
+					oxygen = 0;
+
+				haveoxygen = true;
+				text[LI_TOTAL - 3] = "Oxygen";
+				value[LI_TOTAL - 3][0] = formattime(oxygen);
+			}
 		}
 
 		if (showhazards)
 		{
-			int morph = scriptcall("levelinfobridge", "getmorph");
-			int poison = scriptcall("levelinfobridge", "getpoison");
-			int rads = scriptcall("levelinfobridge", "gethazard");
+			int morph = scriptcall(LI_BRIDGE, "getmorph");
+			int poison = scriptcall(LI_BRIDGE, "getpoison");
+			int rads = scriptcall(LI_BRIDGE, "gethazard");
 
 			if (morph)
 			{
@@ -872,7 +883,7 @@ function void levelinfo(void)
 			}
 		}
 
-		int abbreviate = getcvar("li_abbreviate");
+		int abbreviate = getcvarplayer("li_abbreviate");
 		str spaceleft = "";
 
 		if (abbreviate < 0 || abbreviate > 8)
@@ -886,7 +897,7 @@ function void levelinfo(void)
 					text[i] = strleft(text[i], abbreviate);
 			}
 
-			alignvalue(getcvar("li_alignvalue"), showpercentage);
+			alignvalue(getcvarplayer("li_alignvalue"), showpercentage);
 
 			if (!alignx)
 			{
@@ -901,7 +912,7 @@ function void levelinfo(void)
 
 		if (showlevelinfo)
 		{
-			int highlightcolor = getcvar("li_highlightcolor");
+			int highlightcolor = getcvarplayer("li_highlightcolor");
 
 			if (highlightcolor < 1 || highlightcolor > 17)
 				highlightcolor = 17;
@@ -1001,15 +1012,15 @@ function void levelinfo(void)
 
 		if (strcmp(texts, ""))
 		{
-			int opacity = getcvar("li_opacity");
+			int opacity = getcvarplayer("li_opacity");
 			str font = "SHAFONT";
 
-			if (getcvar("li_showonmap"))
+			if (getcvarplayer("li_showonmap"))
 				flags = LI_FLAGS;
 			else
 				flags = LI_FLAGS | HUDMSG_NOTWITHFULLMAP;
 
-			if (getcvar("li_doomfont"))
+			if (getcvarplayer("li_doomfont"))
 				font = "SHADFONT";
 
 			if (opacity < 10 || opacity > 100)
@@ -1033,7 +1044,7 @@ script "levelinfo" (void)
 
 script "levelinfodeath" DEATH
 {
-	if (playernumber() != scriptcall("levelinfobridge", "getconsoleplayer"))
+	if (playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer"))
 		terminate;
 
 	acs_namedterminate("levelinfo", 0);
@@ -1041,19 +1052,19 @@ script "levelinfodeath" DEATH
 
 script "levelinfoenter" ENTER
 {
-	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall("levelinfobridge", "getconsoleplayer") || scriptcall("levelinfobridge", "getnoautosavehint"))
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer") || scriptcall(LI_BRIDGE, "getnoautosavehint"))
 		terminate;
 
 	acs_namedexecutewithresult("levelinfonameauthor", 0);
-	powerassign(scriptcall("levelinfobridge", "powerassign"));
+	powerassign(scriptcall(LI_BRIDGE, "powerassign"));
 	acs_namedexecutewithresult("levelinfo", 0);
 }
 
 script "levelinfonameauthor" (void)
 {
-	if (getcvar("li_shownameauthor"))
+	if (getcvarplayer("li_shownameauthor"))
 	{
-		str levelname = scriptcall("levelinfobridge", "getlevelname");
+		str levelname = scriptcall(LI_BRIDGE, "getlevelname");
 
 		if (strcmp(levelname, ""))
 		{
@@ -1062,7 +1073,7 @@ script "levelinfonameauthor" (void)
 			int delimiters = 3;
 			int flags = HUDMSG_FADEINOUT | HUDMSG_NOWRAP;
 			int length = strlen(levelname);
-			str authorname = scriptcall("levelinfobridge", "getauthorname");
+			str authorname = scriptcall(LI_BRIDGE, "getauthorname");
 			str delimiter[3] = { " - by: ", " - by ", " - " };
 
 			for (int i = 0; i < length; i++)
@@ -1088,26 +1099,26 @@ script "levelinfonameauthor" (void)
 				}
 			}
 
-			if (getcvar("li_showmapnumber"))
+			if (getcvarplayer("li_showmapnumber"))
 			{
-				str mapname = scriptcall("levelinfobridge", "getmapname");
+				str mapname = scriptcall(LI_BRIDGE, "getmapname");
 
 				if (strcmp(mapname, ""))
 					levelname = strparam(s:mapname, s:": ", s:levelname);
 			}
 
-			int authordelay = getcvar("li_authordelay");
+			int authordelay = getcvarplayer("li_authordelay");
 
 			if (authordelay != 0 && authordelay != 1 && authordelay != 2)
 				authordelay = 2;
 
-			int color = getcvar("li_namecolor");
+			int color = getcvarplayer("li_namecolor");
 
 			if (color < 1 || color > 17)
 				color = 14;
 
-			int fadein = getcvar("li_nameauthorfadein");
-			int fadeout = getcvar("li_nameauthorfadeout");
+			int fadein = getcvarplayer("li_nameauthorfadein");
+			int fadeout = getcvarplayer("li_nameauthorfadeout");
 
 			if (fadein < 0 || fadein > 2.0)
 				fadein = 1.0;
@@ -1115,20 +1126,23 @@ script "levelinfonameauthor" (void)
 			if (fadeout < 0 || fadeout > 2.0)
 				fadeout = 1.0;
 
-			int hold = getcvar("li_nameauthorhold");
+			int hold = getcvarplayer("li_nameauthorhold");
 
 			if (hold < 3.0 || hold > 10.0)
 				hold = 6.0;
 
-			int namedelay = getcvar("li_namedelay");
+			int namedelay = getcvarplayer("li_namedelay");
 
 			if (namedelay != 0 && namedelay != 1 && namedelay != 2)
 				namedelay = 1;
 
-			int scale = getcvar("li_nameauthorscale");
+			int scale = getcvarplayer("li_nameauthorscale");
 
 			if (!scale)
 				scale = getcvar("con_scaletext");
+
+			if (!scale)
+				scale = getcvar("uiscale");
 
 			if (scale < 1 || scale > 8)
 				scale = 3;
@@ -1155,7 +1169,7 @@ script "levelinfonameauthor" (void)
 				hudmessage(s:authorname; flags, LI_ID_AUTHOR, CR_GRAY, x, y + 16.1, hold - (authordelay << 16), fadein, fadeout);
 			}
 
-			if (getcvar("li_shownameflash") && hold >= 5.0)
+			if (getcvarplayer("li_shownameflash") && hold >= 5.0)
 			{
 				delay(LI_TICRATE * 2);
 				setfont("BIGFONT");
@@ -1169,7 +1183,7 @@ script "levelinfonameauthor" (void)
 
 script "levelinforespawn" RESPAWN
 {
-	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall("levelinfobridge", "getconsoleplayer") || scriptcall("levelinfobridge", "getnoautosavehint"))
+	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer") || scriptcall(LI_BRIDGE, "getnoautosavehint"))
 		terminate;
 
 	acs_namedexecutewithresult("levelinfo", 0);

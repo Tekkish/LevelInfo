@@ -1,3 +1,6 @@
+## January 7, 2024 (v1.43)
+- Fixed an issue that could cause the add-on to stop working after unmorphing.
+
 ## January 1, 2024 (v1.42)
 - The name and author hold time can now be reduced to 3 seconds. This will disable the name flash.
 
