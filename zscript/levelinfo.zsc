@@ -33,6 +33,16 @@ class levelinfobridge
 		return consoleplayer;
 	}
 
+	ui private static bool getdeath()
+	{
+		playerinfo player = players[consoleplayer];
+
+		if (player.mo is "PlayerChunk")
+			return true;
+
+		return false;
+	}
+
 	ui private static int gethazard()
 	{
 		playerinfo player = players[consoleplayer];

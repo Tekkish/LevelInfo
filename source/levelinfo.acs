@@ -30,6 +30,7 @@
 #define LI_TIME			(LI_REFRESH << 16) / LI_TICRATE + 1
 
 bool highlight[LI_TOTAL];
+bool killswitch;
 bool powerups[LI_POWERUPS][2];
 int total;
 str powerupsvalues[LI_POWERUPS][4];
@@ -1037,17 +1038,15 @@ function void levelinfo(void)
 
 script "levelinfo" (void)
 {
+	if (scriptcall(LI_BRIDGE, "getdeath"))
+	{
+		killswitch = true;
+		terminate;
+	}
+
 	levelinfo();
 	delay(LI_REFRESH);
 	restart;
-}
-
-script "levelinfodeath" DEATH
-{
-	if (playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer"))
-		terminate;
-
-	acs_namedterminate("levelinfo", 0);
 }
 
 script "levelinfoenter" ENTER
@@ -1183,8 +1182,12 @@ script "levelinfonameauthor" (void)
 
 script "levelinforespawn" RESPAWN
 {
-	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer") || scriptcall(LI_BRIDGE, "getnoautosavehint"))
+	if (playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer") || scriptcall(LI_BRIDGE, "getnoautosavehint"))
 		terminate;
 
-	acs_namedexecutewithresult("levelinfo", 0);
+	if (killswitch)
+	{
+		killswitch = false;
+		acs_namedexecutewithresult("levelinfo", 0);
+	}
 }
