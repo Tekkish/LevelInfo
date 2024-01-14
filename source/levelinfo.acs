@@ -1056,8 +1056,8 @@ script "levelinfoenter" ENTER
 		terminate;
 
 	powerassign(scriptcall(LI_BRIDGE, "powerassign"));
-	acs_namedexecutewithresult("levelinfo", 0);
-	acs_namedexecutewithresult("levelinfonameauthor", 0);
+	acs_namedexecutewithresult("levelinfo");
+	acs_namedexecutewithresult("levelinfonameauthor");
 }
 
 script "levelinfonameauthor" (void)
@@ -1189,6 +1189,6 @@ script "levelinforespawn" RESPAWN
 	if (killswitch)
 	{
 		killswitch = false;
-		acs_namedexecutewithresult("levelinfo", 0);
+		acs_namedexecutewithresult("levelinfo");
 	}
 }
