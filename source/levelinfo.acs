@@ -32,7 +32,7 @@
 bool highlight[LI_TOTAL];
 bool killswitch;
 bool powerups[LI_POWERUPS][2];
-int total;
+int consoleplayer, total;
 str powerupsvalues[LI_POWERUPS][4];
 str text[LI_TOTAL];
 str value[LI_TOTAL][3];
@@ -248,7 +248,7 @@ function str getcolor(int color)
 
 function int getcvarplayer(str cvar)
 {
-	return getusercvar(scriptcall(LI_BRIDGE, "getconsoleplayer"), cvar);
+	return getusercvar(consoleplayer, cvar);
 }
 
 function void powerassign(str powerstring)
@@ -1044,6 +1044,7 @@ script "levelinfo" (void)
 		terminate;
 	}
 
+	consoleplayer = scriptcall(LI_BRIDGE, "getconsoleplayer");
 	levelinfo();
 	delay(LI_REFRESH);
 	restart;
@@ -1054,9 +1055,9 @@ script "levelinfoenter" ENTER
 	if (!strcmp("TITLEMAP", strparam(n:PRINTNAME_LEVEL)) || playernumber() != scriptcall(LI_BRIDGE, "getconsoleplayer") || scriptcall(LI_BRIDGE, "getnoautosavehint"))
 		terminate;
 
-	acs_namedexecutewithresult("levelinfonameauthor", 0);
 	powerassign(scriptcall(LI_BRIDGE, "powerassign"));
 	acs_namedexecutewithresult("levelinfo", 0);
+	acs_namedexecutewithresult("levelinfonameauthor", 0);
 }
 
 script "levelinfonameauthor" (void)

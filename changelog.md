@@ -1,3 +1,6 @@
+## January 14, 2024 (v1.45)
+- Minor performance optimizations.
+
 ## January 8, 2024 (v1.44)
 - Fixed a bug that created multiple instances of the add-on when morphing or respawning.
 
