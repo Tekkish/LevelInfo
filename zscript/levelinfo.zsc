@@ -100,12 +100,10 @@ class levelinfobridge
 
 	ui private static bool getnoautosavehint()
 	{
-		bool noautosavehint;
-
 		if (level.info && level.info.flags2 & LEVEL2_NOAUTOSAVEHINT)
-			noautosavehint = true;
+			return true;
 
-		return noautosavehint;
+		return false;
 	}
 
 	ui private static int getpoison()
