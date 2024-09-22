@@ -15,7 +15,7 @@ LevelInfo has been customized for use with the following mods:
 - Argent
 - Ashes 2063: Enriched Edition
 - Ashes Afterglow
-- Brutal Doom 21
+- Brutal Doom
 - Brutal Doom 64
 - Death Foretold
 - Doom 64 Retribution
@@ -24,7 +24,7 @@ LevelInfo has been customized for use with the following mods:
 - Final Doomer
 - NAKU-NARU
 - NAKU-NARU 2
-- Project Brutality 3.0
+- Project Brutality
 - Shazam
 - Supercharge
 - Weapons of Saturn
