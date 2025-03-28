@@ -1,130 +1,130 @@
 AddOptionMenu "OptionsMenu"
 {
-	Submenu "LevelInfo Options", "LI_Options"
+	Submenu "$LI_MENU_TITLE", "LI_Options"
 }
 
 OptionMenu "LI_Options"
 {
-	Title "LevelInfo Options"
-	Option "Show LevelInfo", "li_visible", "LI_YesNo"
+	Title "$LI_MENU_TITLE"
+	Option "$LI_OPTION_VISIBLE", "li_visible", "LI_YesNo"
 	StaticText ""
-	StaticText "General Options", 1
-	ScaleSlider "Abbreviated Characters", "li_abbreviate", 0, 8, 1, "None"
-	Option "Highlight Color", "li_highlightcolor", "LI_Color"
-	Option "Highlight Values", "li_highlightvalue", "LI_YesNo"
-	Slider "Opacity Percentage", "li_opacity", 10, 100, 1, 0
-	Option "Show Active Powerups", "li_showpowerups", "LI_YesNo"
-	Option "Show Berserk Status", "li_showberserk", "LI_YesNo"
-	Option "Show Hazards", "li_showhazards", "LI_YesNo"
-	Option "Show Map Items", "li_showitems", "LI_YesNo"
-	Option "Show Map Par Time", "li_showpar", "LI_YesNo"
-	Option "Show Map Statistics", "li_showlevelinfo", "LI_YesNo"
-	Option "Show Map Time", "li_showtime", "LI_YesNo"
-	Option "Show Map Total Time", "li_showtotaltime", "LI_YesNo"
-	Option "Show on Automap", "li_showonmap", "LI_YesNo"
-	Option "Show Oxygen Time", "li_showoxygen", "LI_YesNo"
-	Option "Show Percentages", "li_showpercentage", "LI_ShowPercentage"
-	Option "Use Doom Font", "li_doomfont", "LI_YesNo"
-	Option "Value Alignment", "li_alignvalue", "LI_AlignValue"
+	StaticText "$LI_MENU_GENERAL", 1
+	ScaleSlider "$LI_OPTION_ABBREVIATE", "li_abbreviate", 0, 8, 1, "$LI_VALUE_NONE"
+	Option "$LI_OPTION_HIGHLIGHTCOLOR", "li_highlightcolor", "LI_Color"
+	Option "$LI_OPTION_HIGHLIGHTVALUE", "li_highlightvalue", "LI_YesNo"
+	Slider "$LI_OPTION_OPACITY", "li_opacity", 10, 100, 1, 0
+	Option "$LI_OPTION_SHOWPOWERUPS", "li_showpowerups", "LI_YesNo"
+	Option "$LI_OPTION_SHOWBERSERK", "li_showberserk", "LI_YesNo"
+	Option "$LI_OPTION_SHOWHAZARDS", "li_showhazards", "LI_YesNo"
+	Option "$LI_OPTION_SHOWHAZARDS", "li_showitems", "LI_YesNo"
+	Option "$LI_OPTION_SHOWPAR", "li_showpar", "LI_YesNo"
+	Option "$LI_OPTION_SHOWLEVELINFO", "li_showlevelinfo", "LI_YesNo"
+	Option "$LI_OPTION_SHOWTIME", "li_showtime", "LI_YesNo"
+	Option "$LI_OPTION_SHOWTOTALTIME", "li_showtotaltime", "LI_YesNo"
+	Option "$LI_OPTION_SHOWONMAP", "li_showonmap", "LI_YesNo"
+	Option "$LI_OPTION_SHOWOXYGEN", "li_showoxygen", "LI_YesNo"
+	Option "$LI_OPTION_SHOWPERCENTAGE", "li_showpercentage", "LI_ShowPercentage"
+	Option "$LI_OPTION_DOOMFONT", "li_doomfont", "LI_YesNo"
+	Option "$LI_OPTION_ALIGNVALUE", "li_alignvalue", "LI_AlignValue"
 	StaticText ""
-	StaticText "Name & Author Options", 1
-	StaticText "You can instruct LevelInfo to show the map"
-	StaticText "name and author when entering a level."
+	StaticText "$LI_MENU_NAMEAUTHOR", 1
+	StaticText "$LI_MENU_TEXT_NAMEAUTHOR1"
+	StaticText "$LI_MENU_TEXT_NAMEAUTHOR2"
 	StaticText ""
-	Option "Show Name & Author", "li_shownameauthor", "LI_YesNo"
-	Option "Author Delay", "li_authordelay", "LI_Delay"
-	Slider "Fade In Time in Seconds", "li_nameauthorfadein", 0.0, 2.0, 0.1, 2
-	Slider "Fade Out Time in Seconds", "li_nameauthorfadeout", 0.0, 2.0, 0.1, 2
-	Slider "Hold Time in Seconds", "li_nameauthorhold", 3.0, 10.0, 0.1, 2
-	Option "Name Color", "li_namecolor", "LI_Color"
-	Option "Name Delay", "li_namedelay", "LI_Delay"
-	Option "Show Map Number", "li_showmapnumber", "LI_YesNo"
-	Option "Show Name Flash", "li_shownameflash", "LI_YesNo"
-	ScaleSlider "Text Scaling", "li_nameauthorscale", 0, 8, 1, "Default"
+	Option "$LI_OPTION_SHOWNAMEAUTHOR", "li_shownameauthor", "LI_YesNo"
+	Option "$LI_OPTION_AUTHORDELAY", "li_authordelay", "LI_Delay"
+	Slider "$LI_OPTION_NAMEAUTHORFADEIN", "li_nameauthorfadein", 0.0, 2.0, 0.1, 2
+	Slider "$LI_OPTION_NAMEAUTHORFADEOUT", "li_nameauthorfadeout", 0.0, 2.0, 0.1, 2
+	Slider "$LI_OPTION_NAMEAUTHORHOLD", "li_nameauthorhold", 3.0, 10.0, 0.1, 2
+	Option "$LI_OPTION_NAMECOLOR", "li_namecolor", "LI_Color"
+	Option "$LI_OPTION_NAMEDELAY", "li_namedelay", "LI_Delay"
+	Option "$LI_OPTION_SHOWMAPNUMBER", "li_showmapnumber", "LI_YesNo"
+	Option "$LI_OPTION_SHOWNAMEFLASH", "li_shownameflash", "LI_YesNo"
+	ScaleSlider "$LI_OPTION_NAMEAUTHORSCALE", "li_nameauthorscale", 0, 8, 1, "$LI_VALUE_DEFAULT"
 	StaticText ""
-	StaticText "Position Options", 1
-	StaticText "You can specify a custom position"
-	StaticText "for LevelInfo below. Note that it's"
-	StaticText "possible to exceed the boundries of the"
-	StaticText "screen if a low resolution is being used."
+	StaticText "$LI_MENU_POSITION", 1
+	StaticText "$LI_MENU_TEXT_POSITION1"
+	StaticText "$LI_MENU_TEXT_POSITION2"
+	StaticText "$LI_MENU_TEXT_POSITION3"
+	StaticText "$LI_MENU_TEXT_POSITION4"
 	StaticText ""
-	Option "Position Preset", "li_position", "LI_Position"
+	Option "$LI_OPTION_POSITION", "li_position", "LI_Position"
 	StaticText ""
-	StaticText "If the chosen preset is custom, you"
-	StaticText "can further tweak the position below."
+	StaticText "$LI_MENU_TEXT_PRESET1"
+	StaticText "$LI_MENU_TEXT_PRESET2"
 	StaticText ""
-	Option "Horizontal Alignment", "li_alignx", "LI_AlignX"
-	Slider "Horizontal Position", "li_x", 0, 90, 1, 0
-	Option "Vertical Alignment", "li_aligny", "LI_AlignY"
-	Slider "Vertical Position", "li_y", 0, 50, 1, 0
+	Option "$LI_OPTION_ALIGNX", "li_alignx", "LI_AlignX"
+	Slider "$LI_OPTION_X", "li_x", 0, 90, 1, 0
+	Option "$LI_OPTION_ALIGNY", "li_aligny", "LI_AlignY"
+	Slider "$LI_OPTION_Y", "li_y", 0, 50, 1, 0
 }
 
 OptionValue "LI_AlignValue"
 {
-	0, "Standard"
-	1, "Numeric"
+	0, "$LI_VALUE_STANDARD"
+	1, "$LI_VALUE_NUMERIC"
 }
 
 OptionValue "LI_AlignX"
 {
-	0, "Left"
-	1, "Right"
+	0, "$LI_VALUE_LEFT"
+	1, "$LI_VALUE_RIGHT"
 }
 
 OptionValue "LI_AlignY"
 {
-	0, "Top"
-	1, "Bottom"
+	0, "$LI_VALUE_TOP"
+	1, "$LI_VALUE_BOTTOM"
 }
 
 OptionValue "LI_Color"
 {
-	1, "Blue"
-	2, "Brown"
-	3, "Cream"
-	4, "Cyan"
-	5, "Dark Gray"
-	6, "Dark Green"
-	7, "Dark Red"
-	8, "Gray"
-	9, "Green"
-	10, "Olive"
-	11, "Orange"
-	12, "Pink"
-	13, "Purple"
-	14, "Red"
-	15, "Sapphire"
-	16, "Teal"
-	17, "Yellow"
+	1, "$LI_VALUE_BLUE"
+	2, "$LI_VALUE_BROWN"
+	3, "$LI_VALUE_CREAM"
+	4, "$LI_VALUE_CYAN"
+	5, "$LI_VALUE_DARKGRAY"
+	6, "$LI_VALUE_DARKGREEN"
+	7, "$LI_VALUE_DARKRED"
+	8, "$LI_VALUE_GRAY"
+	9, "$LI_VALUE_GREEN"
+	10, "$LI_VALUE_OLIVE"
+	11, "$LI_VALUE_ORANGE"
+	12, "$LI_VALUE_PINK"
+	13, "$LI_VALUE_PURPLE"
+	14, "$LI_VALUE_RED"
+	15, "$LI_VALUE_SAPPHIRE"
+	16, "$LI_VALUE_TEAL"
+	17, "$LI_VALUE_YELLOW"
 }
 
 OptionValue "LI_Delay"
 {
-	0, "None"
-	1, "1 Second"
-	2, "2 Seconds"
+	0, "$LI_VALUE_NONE"
+	1, "$LI_VALUE_ONESECOND"
+	2, "$LI_VALUE_TWOSECONDS"
 }
 
 OptionValue "LI_Position"
 {
-	0, "Custom"
-	1, "Top Left"
-	2, "Center Left"
-	3, "Bottom Left"
-	4, "Top Right"
-	5, "Center Right"
-	6, "Bottom Right"
+	0, "$LI_VALUE_CUSTOM"
+	1, "$LI_VALUE_TOPLEFT"
+	2, "$LI_VALUE_CENTERLEFT"
+	3, "$LI_VALUE_BOTTOMLEFT"
+	4, "$LI_VALUE_TOPRIGHT"
+	5, "$LI_VALUE_CENTERRIGHT"
+	6, "$LI_VALUE_BOTTOMRIGHT"
 }
 
 OptionValue "LI_ShowPercentage"
 {
-	0, "No"
-	1, "With Statistics"
-	2, "Replace Statistics"
+	0, "$LI_VALUE_NO"
+	1, "$LI_VALUE_WITHSTATISTICS"
+	2, "$LI_VALUE_REPLACESTATISTICS"
 }
 
 OptionValue "LI_YesNo"
 {
-	0, "No"
-	1, "Yes"
+	0, "$LI_VALUE_NO"
+	1, "$LI_VALUE_YES"
 }

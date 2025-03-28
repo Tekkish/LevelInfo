@@ -102,38 +102,38 @@ function void errormessage(int type)
 	switch (type)
 	{
 		case 0:
-			message = "A power-up class is missing or invalid.";
+			message = "LI_ERROR_POWERUPCLASSINVALID";
 			break;
 
 		case 1:
-			message = "A power-up name is missing or invalid.";
+			message = "LI_ERROR_POWERUPNAMEINVALID";
 			break;
 
 		case 2:
-			message = "A berserk token is missing or invalid.";
+			message = "LI_ERROR_BERSERKTOKENINVALID";
 			break;
 
 		case 3:
-			message = "A power-up color is missing or invalid.";
+			message = "LI_ERROR_POWERUPCOLORINVALID";
 			break;
 
 		case 4:
-			message = "A supplied player class is invalid.";
+			message = "LI_ERROR_PLAYERCLASSINVALID";
 			break;
 
 		case 5:
-			message = "There is no player class to unset.";
+			message = "LI_ERROR_PLAYERCLASSUNSET";
 			break;
 
 		case 6:
-			message = "A supplied argument is invalid.";
+			message = "LI_ERROR_ARGUMENTINVALID";
 			break;
 
 		default:
-			message = "No power-up assignment has been found.";
+			message = "LI_ERROR_NOASSIGNMENT";
 	}
 
-	log(s:"LevelInfo error: ", s:message);
+	log(l:"LI_ERROR", l:message);
 }
 
 function str formattime(int seconds)
