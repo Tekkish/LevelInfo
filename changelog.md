@@ -1,3 +1,7 @@
+## June 23, 2025 (v1.48)
+- Added an option to show kill, item, and secret totals when there aren't any on a map (zero).
+- Fixed an improperly named menu option.
+
 ## June 23, 2025 (v1.47)
 - Updated support for Project Brutality.
 

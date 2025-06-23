@@ -676,12 +676,13 @@ function void levelinfo(void)
 		{
 			bool showitems = getcvarplayer("li_showitems");
 			bool showtime = getcvarplayer("li_showtime");
+			bool showzero = getcvarplayer("li_showzero");
 
 			itemstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_ITEMS), LI_MAXNUMBER);
 			monsterstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_MONSTERS), LI_MAXNUMBER);
 			secretstotal = maxnumber(getlevelinfo(LEVELINFO_TOTAL_SECRETS), LI_MAXNUMBER);
 
-			if (monsterstotal)
+			if (monsterstotal || showzero)
 			{
 				monsters = maxnumber(getlevelinfo(LEVELINFO_KILLED_MONSTERS), LI_MAXNUMBER);
 
@@ -698,7 +699,10 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					percentage = strparam(d:100 * monsters / monsterstotal, s:"%");
+					if (!showzero)
+						percentage = strparam(d:100 * monsters / monsterstotal, s:"%");
+					else
+						percentage = "100%";
 
 					if (showpercentage == 2)
 						value[0][0] = percentage;
@@ -707,7 +711,7 @@ function void levelinfo(void)
 				}
 			}
 
-			if (showitems && itemstotal)
+			if (showitems && (itemstotal || showzero))
 			{
 				items = maxnumber(getlevelinfo(LEVELINFO_FOUND_ITEMS), LI_MAXNUMBER);
 
@@ -724,7 +728,10 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					percentage = strparam(d:100 * items / itemstotal, s:"%");
+					if (!showzero)
+						percentage = strparam(d:100 * items / itemstotal, s:"%");
+					else
+						percentage = "100%";
 
 					if (showpercentage == 2)
 						value[1][0] = percentage;
@@ -733,7 +740,7 @@ function void levelinfo(void)
 				}
 			}
 
-			if (secretstotal)
+			if (secretstotal || showzero)
 			{
 				secrets = maxnumber(getlevelinfo(LEVELINFO_FOUND_SECRETS), LI_MAXNUMBER);
 
@@ -750,7 +757,10 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					percentage = strparam(d:100 * secrets / secretstotal, s:"%");
+					if (!showzero)
+						percentage = strparam(d:100 * secrets / secretstotal, s:"%");
+					else
+						percentage = "100%";
 
 					if (showpercentage == 2)
 						value[2][0] = percentage;
@@ -759,7 +769,7 @@ function void levelinfo(void)
 				}
 			}
 
-			if (showtime && (itemstotal || monsterstotal || secretstotal))
+			if (showtime && (itemstotal || monsterstotal || secretstotal || showzero))
 			{
 				bool showpar = getcvarplayer("li_showpar");
 				bool showtotaltime = getcvarplayer("li_showtotaltime");
@@ -920,19 +930,19 @@ function void levelinfo(void)
 
 			str colorvalue = getcolor(highlightcolor);
 
-			if (monsterstotal)
+			if (monsterstotal || showzero)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[0], true));
 				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[0][0], highlight[0]));
 			}
 
-			if (showitems && itemstotal)
+			if (showitems && (itemstotal || showzero))
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[1], true));
 				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[1][0], highlight[1]));
 			}
 
-			if (secretstotal)
+			if (secretstotal || showzero)
 			{
 				texts = strparam(s:newline(texts), s:marginleft, s:coloredtext(LI_COLOR_DARK, text[2], true));
 				values = strparam(s:newline(values), s:spaceleft, s:coloredtext(colorvalue, value[2][0], highlight[2]));

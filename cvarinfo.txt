@@ -16,6 +16,7 @@ user bool li_showpar = false;
 user bool li_showpowerups = true;
 user bool li_showtime = true;
 user bool li_showtotaltime = false;
+user bool li_showzero = false;
 user bool li_visible = true;
 user float li_nameauthorfadein = 1.0;
 user float li_nameauthorfadeout = 1.0;

@@ -53,6 +53,7 @@ LI_OPTION_SHOWPERCENTAGE = "Show Percentages";
 LI_OPTION_SHOWPOWERUPS = "Show Powerups";
 LI_OPTION_SHOWTIME = "Show Map Time";
 LI_OPTION_SHOWTOTALTIME = "Show Map Total Time";
+LI_OPTION_SHOWZERO = "Show Totals When Zero";
 LI_OPTION_VISIBLE = "Show LevelInfo";
 LI_OPTION_X = "Horizontal Position";
 LI_OPTION_Y = "Vertical Position";
