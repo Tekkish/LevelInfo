@@ -238,7 +238,7 @@ class levelinfobridge
 			}
 
 			// Project Brutality
-			else if (playerclass == "PB_Doomer")
+			else if (playerclass == "PB_PlayerPawn")
 			{
 				powerassignment =
 					"PowerStrength, Berserk, berserk, g"		.. "\n" ..
