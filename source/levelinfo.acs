@@ -699,7 +699,7 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					if (!showzero)
+					if (monsterstotal)
 						percentage = strparam(d:100 * monsters / monsterstotal, s:"%");
 					else
 						percentage = "100%";
@@ -728,7 +728,7 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					if (!showzero)
+					if (itemstotal)
 						percentage = strparam(d:100 * items / itemstotal, s:"%");
 					else
 						percentage = "100%";
@@ -757,7 +757,7 @@ function void levelinfo(void)
 
 				if (showpercentage)
 				{
-					if (!showzero)
+					if (secretstotal)
 						percentage = strparam(d:100 * secrets / secretstotal, s:"%");
 					else
 						percentage = "100%";
