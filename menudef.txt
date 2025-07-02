@@ -33,11 +33,12 @@ OptionMenu "LI_Options"
 	StaticText "$LI_MENU_TEXT_NAMEAUTHOR2"
 	StaticText ""
 	Option "$LI_OPTION_SHOWNAMEAUTHOR", "li_shownameauthor", "LI_YesNo"
+	Option "$LI_OPTION_AUTHORCOLOR", "li_authorcolor", "LI_AuthorNameColor"
 	Option "$LI_OPTION_AUTHORDELAY", "li_authordelay", "LI_Delay"
 	Slider "$LI_OPTION_NAMEAUTHORFADEIN", "li_nameauthorfadein", 0.0, 2.0, 0.1, 2
 	Slider "$LI_OPTION_NAMEAUTHORFADEOUT", "li_nameauthorfadeout", 0.0, 2.0, 0.1, 2
 	Slider "$LI_OPTION_NAMEAUTHORHOLD", "li_nameauthorhold", 3.0, 10.0, 0.1, 2
-	Option "$LI_OPTION_NAMECOLOR", "li_namecolor", "LI_Color"
+	Option "$LI_OPTION_NAMECOLOR", "li_namecolor", "LI_AuthorNameColor"
 	Option "$LI_OPTION_NAMEDELAY", "li_namedelay", "LI_Delay"
 	Option "$LI_OPTION_SHOWMAPNUMBER", "li_showmapnumber", "LI_YesNo"
 	Option "$LI_OPTION_SHOWNAMEFLASH", "li_shownameflash", "LI_YesNo"
@@ -76,6 +77,29 @@ OptionValue "LI_AlignY"
 {
 	0, "$LI_VALUE_TOP"
 	1, "$LI_VALUE_BOTTOM"
+}
+
+OptionValue "LI_AuthorNameColor"
+{
+	1, "$LI_VALUE_BLUE"
+	2, "$LI_VALUE_BROWN"
+	3, "$LI_VALUE_CREAM"
+	4, "$LI_VALUE_CYAN"
+	5, "$LI_VALUE_DARKGRAY"
+	6, "$LI_VALUE_DARKGREEN"
+	7, "$LI_VALUE_DARKRED"
+	8, "$LI_VALUE_GRAY"
+	9, "$LI_VALUE_GREEN"
+	18, "$LI_VALUE_LIGHTGRAY"
+	10, "$LI_VALUE_OLIVE"
+	11, "$LI_VALUE_ORANGE"
+	12, "$LI_VALUE_PINK"
+	13, "$LI_VALUE_PURPLE"
+	14, "$LI_VALUE_RED"
+	15, "$LI_VALUE_SAPPHIRE"
+	16, "$LI_VALUE_TEAL"
+	19, "$LI_VALUE_WHITE"
+	17, "$LI_VALUE_YELLOW"
 }
 
 OptionValue "LI_Color"

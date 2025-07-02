@@ -241,6 +241,14 @@ function str getcolor(int color)
 
 		case 17:
 			color = "k";
+			break;
+
+		case 18: // Light Gray
+			color = "c";
+			break;
+
+		case 19:
+			color = "j";
 	}
 
 	return color;
@@ -1122,10 +1130,14 @@ script "levelinfonameauthor" (void)
 			if (authordelay != 0 && authordelay != 1 && authordelay != 2)
 				authordelay = 2;
 
-			int color = getcvarplayer("li_namecolor");
+			int authorcolor = getcvarplayer("li_authorcolor");
+			int namecolor = getcvarplayer("li_namecolor");
 
-			if (color < 1 || color > 17)
-				color = 14;
+			if (authorcolor < 1 || authorcolor > 19)
+				authorcolor = 18;
+
+			if (namecolor < 1 || namecolor > 19)
+				namecolor = 14;
 
 			int fadein = getcvarplayer("li_nameauthorfadein");
 			int fadeout = getcvarplayer("li_nameauthorfadeout");
@@ -1170,16 +1182,16 @@ script "levelinfonameauthor" (void)
 			delay(LI_TICRATE * namedelay);
 			setfont("BIGFONT");
 			sethudsize(width, height, true);
-			hudmessage(s:coloredtext(getcolor(color), levelname, true); flags, LI_ID_NAME, LI_BASECOLOR, x, y + 0.1, hold, fadein, fadeout);
+			hudmessage(s:coloredtext(getcolor(namecolor), levelname, true); flags, LI_ID_NAME, LI_BASECOLOR, x, y + 0.1, hold, fadein, fadeout);
 
 			if (strcmp(authorname, ""))
 			{
 				delay(LI_TICRATE * authordelay);
 				setfont("SMALLFONT");
-				hudmessage(s:authorname; flags, LI_ID_AUTHOR, CR_GRAY, x, y + 16.1, hold - (authordelay << 16), fadein, fadeout);
+				hudmessage(s:coloredtext(getcolor(authorcolor), authorname, true); flags, LI_ID_AUTHOR, LI_BASECOLOR, x, y + 16.1, hold - (authordelay << 16), fadein, fadeout);
 			}
 
-			if (getcvarplayer("li_shownameflash") && hold >= 5.0)
+			if (getcvarplayer("li_shownameflash") && hold >= 5.0 && namecolor < 18)
 			{
 				delay(LI_TICRATE * 2);
 				setfont("BIGFONT");

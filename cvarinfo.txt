@@ -22,6 +22,7 @@ user float li_nameauthorfadein = 1.0;
 user float li_nameauthorfadeout = 1.0;
 user float li_nameauthorhold = 6.0;
 user int li_abbreviate = 0;
+user int li_authorcolor = 18;
 user int li_authordelay = 2;
 user int li_highlightcolor = 17;
 user int li_nameauthorscale = 0;

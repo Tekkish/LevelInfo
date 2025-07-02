@@ -1,3 +1,7 @@
+## July 2, 2025 (v1.49)
+- Added an option to change the map author color.
+- Added light gray and white as selectable colors for map names and authors.
+
 ## June 23, 2025 (v1.48)
 - Added an option to show kill, item, and secret totals when there aren't any on a map (zero).
 - Fixed an improperly named menu option.
