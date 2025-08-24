@@ -10,7 +10,7 @@ GZDoom v3.6 or newer.
 
 ### Compatibility
 
-LevelInfo has been customized for use with the following mods:
+LevelInfo has been tested for use with the following mods:
 
 - Argent
 - Ashes 2063: Enriched Edition
@@ -20,6 +20,7 @@ LevelInfo has been customized for use with the following mods:
 - Death Foretold
 - Doom 64 Retribution
 - Doom Incarnate
+- Faspons
 - Flakes Doom
 - Final Doomer
 - NAKU-NARU
