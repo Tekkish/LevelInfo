@@ -1,3 +1,6 @@
+## September 2, 2025 (v1.50)
+- Added support for Diamond Dragon.
+
 ## July 2, 2025 (v1.49)
 - Added an option to change the map author color.
 - Added light gray and white as selectable colors for map names and authors.

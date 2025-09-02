@@ -17,6 +17,62 @@ class levelinfobridge
 		return false;
 	}
 
+	ui private static bool checkstartuptitle(string title)
+	{
+		array<String> properties;
+		bool found;
+		int end;
+		int lumps = wads.findlump("GAMEINFO", 0, Wads.GLOBALNAMESPACE);
+		string lump, value;
+
+		while (lumps != -1)
+		{
+			lump = lump .. wads.readlump(lumps);
+			lumps = wads.findlump("GAMEINFO", lumps + 1, Wads.GLOBALNAMESPACE);
+		}
+
+		if (lump)
+		{
+			lump.split(properties, "=", TOK_SKIPEMPTY);
+
+			for (int i = 0; i < properties.size(); i++)
+			{
+				properties[i].stripleftright();
+
+				if (properties[i].mid(properties[i].length() - 12, 12) ~== "startuptitle")
+				{
+					value = properties[i + 1];
+					value.stripleftright();
+					end = value.rightindexof("\"");
+
+					if (end > -1)
+					{
+						value = value.mid(0, end);
+						value.replace("\"", "");
+					}
+					else
+					{
+						end = value.rightindexof("\n");
+
+						if (end > -1)
+							value = value.mid(0, end);
+					}
+
+					if (value ~== title)
+					{
+						found = true;
+						break;
+					}
+				}
+			}
+
+			if (found)
+				return true;
+		}
+
+		return false;
+	}
+
 	ui private static string getauthorname()
 	{
 		return stringtable.localize(level.authorname);
@@ -188,6 +244,17 @@ class levelinfobridge
 					"PowerQDamage, Quad, calm, t"				.. "\n" ..
 					"PowerD4Regeneration, Regen, calm, y"		.. "\n" ..
 					"PowerD4IronFeet, Suit, calm, d";
+			}
+
+			// Diamond Dragon
+			else if (playerclass == "Kiwi")
+			{
+				powerassignment =
+					"PowerBerserk, Berserk, berserk, g"			.. "\n" ..
+					"PowerCloaked, Hidden, calm, n"				.. "\n" ..
+					"PowerInvulnerable, Immune, calm, k"		.. "\n" ..
+					"PowerNightVisionMode, Light, calm, f"		.. "\n" ..
+					"PowerRadMask, Suit, calm, d";
 			}
 
 			// Doom 64 Retribution
