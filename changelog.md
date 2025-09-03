@@ -1,3 +1,6 @@
+## September 3, 2025 (v1.51)
+- Minor font changes.
+
 ## September 2, 2025 (v1.50)
 - Added support for Diamond Dragon.
 
